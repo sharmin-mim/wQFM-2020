@@ -15,6 +15,7 @@ public class Quartet {
     public int[] taxa_sisters_left;// = new String[NUM_TAXA_PER_PARTITION];
     public int[] taxa_sisters_right;// = new String[NUM_TAXA_PER_PARTITION];
     public double weight;
+    public int quartet_status;//mim
 
     public Quartet() {
         this.weight = 1.0;

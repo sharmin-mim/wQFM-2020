@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 import wqfm.feature.Bin;
 import wqfm.main.Main;
 import wqfm.utils.TreeHandler;
@@ -129,11 +129,11 @@ public class TestNormalFunctions {
         return null;
     }
 
-    private static void testPairDS() {
-        Pair<Integer, Integer> pair;
-        pair = new Pair(2, 3);
-        System.out.println(pair.getKey() + " -> " + pair.getValue());
-    }
+//    private static void testPairDS() {
+//        Pair<Integer, Integer> pair;
+//        pair = new Pair(2, 3);
+//        System.out.println(pair.getKey() + " -> " + pair.getValue());
+//    }
 
     // Using python3 and dendropy ... this reroot_tree_new.py works
     // Command is: python3 reroot_tree_new.py <tree-newick> <outgroup> DON'T FORGET SEMI-COLON
@@ -202,28 +202,28 @@ public class TestNormalFunctions {
 
     }
 
-    public static void testTreeMapFromPairIntegers() {
-        List<Pair<Integer, Integer>> list_pairs = new ArrayList<>();
-        list_pairs.add(new Pair(22, 1));
-        list_pairs.add(new Pair(31, 2));
-        list_pairs.add(new Pair(43, 3));
-        list_pairs.add(new Pair(5, 4));
-        list_pairs.add(new Pair(10, 5));
-
-        for (Pair<Integer, Integer> pair : list_pairs) {
-            System.out.println(pair);
-        }
-
-        Map<Integer, Integer> treeMap = new TreeMap<>(Collections.reverseOrder());
-        for (Pair<Integer, Integer> pair : list_pairs) {
-            treeMap.put(pair.getKey(), pair.getValue());
-        }
-        System.out.println("---------------------------------------");
-        for (Integer key : treeMap.keySet()) {
-            int val = treeMap.get(key);
-            System.out.println(key + "," + val);
-        }
-    }
+//    public static void testTreeMapFromPairIntegers() {
+//        List<Pair<Integer, Integer>> list_pairs = new ArrayList<>();
+//        list_pairs.add(new Pair(22, 1));
+//        list_pairs.add(new Pair(31, 2));
+//        list_pairs.add(new Pair(43, 3));
+//        list_pairs.add(new Pair(5, 4));
+//        list_pairs.add(new Pair(10, 5));
+//
+//        for (Pair<Integer, Integer> pair : list_pairs) {
+//            System.out.println(pair);
+//        }
+//
+//        Map<Integer, Integer> treeMap = new TreeMap<>(Collections.reverseOrder());
+//        for (Pair<Integer, Integer> pair : list_pairs) {
+//            treeMap.put(pair.getKey(), pair.getValue());
+//        }
+//        System.out.println("---------------------------------------");
+//        for (Integer key : treeMap.keySet()) {
+//            int val = treeMap.get(key);
+//            System.out.println(key + "," + val);
+//        }
+//    }
     //https://www.baeldung.com/java-hashmap-sort
     //https://stackoverflow.com/questions/30842966/how-to-sort-a-hash-map-using-key-descending-order
 
@@ -353,26 +353,26 @@ public class TestNormalFunctions {
         return sorted;
     }
 
-    public static void testSortPair() { //takes more time than map putting...
-        List<Pair<Integer, Integer>> list_pairs = new ArrayList<>();
-        list_pairs.add(new Pair(22, 1));
-        list_pairs.add(new Pair(31, 2));
-        list_pairs.add(new Pair(43, 3));
-        list_pairs.add(new Pair(5, 4));
-        list_pairs.add(new Pair(10, 5));
-
-        for (Pair<Integer, Integer> pair : list_pairs) {
-            System.out.println(pair);
-        }
-        System.out.println("---------------------------------------");
-
-        list_pairs.sort((o1, o2) -> {
-            return o2.getKey() - o1.getKey(); //To change body of generated lambdas, choose Tools | Templates.
-        });
-        for (Pair<Integer, Integer> pair : list_pairs) {
-            System.out.println(pair);
-        }
-    }
+//    public static void testSortPair() { //takes more time than map putting...
+//        List<Pair<Integer, Integer>> list_pairs = new ArrayList<>();
+//        list_pairs.add(new Pair(22, 1));
+//        list_pairs.add(new Pair(31, 2));
+//        list_pairs.add(new Pair(43, 3));
+//        list_pairs.add(new Pair(5, 4));
+//        list_pairs.add(new Pair(10, 5));
+//
+//        for (Pair<Integer, Integer> pair : list_pairs) {
+//            System.out.println(pair);
+//        }
+//        System.out.println("---------------------------------------");
+//
+//        list_pairs.sort((o1, o2) -> {
+//            return o2.getKey() - o1.getKey(); //To change body of generated lambdas, choose Tools | Templates.
+//        });
+//        for (Pair<Integer, Integer> pair : list_pairs) {
+//            System.out.println(pair);
+//        }
+//    }
 
     public static void testRerootJarFunctions(int num) {
 //        String newickTree = "((3,(1,2)),((6,5),4));";

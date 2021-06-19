@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javafx.util.Pair;
+//import javafx.util.Pair;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.Quartet;
 import wqfm.feature.FeatureComputer;
@@ -118,6 +118,7 @@ public class Bipartition_8_values {
             int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1]);
 
             int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
+            //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed
             //compute scores according to status.
             switch (status_quartet) {
                 case DefaultValues.SATISFIED:

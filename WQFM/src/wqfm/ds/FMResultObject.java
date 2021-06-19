@@ -63,7 +63,8 @@ public class FMResultObject {
             int right_1_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[0]);
             int right_2_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[1]);
 
-            int quartet_status = TaxaUtils.findQuartetStatus(left_1_partition, left_2_partition, right_1_partition, right_2_partition);
+            //int quartet_status = TaxaUtils.findQuartetStatus(left_1_partition, left_2_partition, right_1_partition, right_2_partition);
+            int quartet_status = quartet_parent.quartet_status;//mim..........does work
 
             //check if quartet is blank or deferred and only keep those, add dummy taxon ... [add quartet-indices and taxa-set]
             if (quartet_status == DefaultValues.BLANK) { // pass THIS quartet, no need to add dummy [all 4 are on same side]
