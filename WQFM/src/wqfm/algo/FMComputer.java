@@ -155,7 +155,7 @@ public class FMComputer {
         }
     }
 
-    public void run_FM_singlepass_hypothetical_swap() {//per pass or step [per num taxa of steps].
+    public void run_FM_singlepass_hypothetical_swap_modified() {//per pass or step [per num taxa of steps].
         //Test hypothetically ...
         for (int taxToConsider : this.customDS.taxa_list_int) {
     		if (this.lockedTaxaBooleanMap.get(taxToConsider) == false) { // this is a free taxon, hypothetically test it ....
@@ -343,7 +343,8 @@ public class FMComputer {
 
             //Either do threaded or single-thread calculation for hypothetical gain calculation
             if (DefaultValues.THREADED_GAIN_CALCULATION_MODE == false) { //for now it is false.
-                //run_FM_singlepass_hypothetical_swap();// modified and non-threaded
+                //run_FM_singlepass_hypothetical_swap();
+            	//run_FM_singlepass_hypothetical_swap_modified();// modified and non-threaded
                 run_FM_singlepass_hypothetical_swap_parallel();//threaded// will transfer in else block later
             } else {
                 try {
