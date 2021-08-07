@@ -104,8 +104,8 @@ public class Bipartition_8_values {
         //  System.out.println("Keyset size before populating: " + dictiory_4Tax_sequence.keySet().size());
         //for feature computation
 
-        for (int idx_quartet : customDS.quartet_indices_list_unsorted) {
-            Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
+        for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
+            //Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
 
             if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
                 FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
@@ -118,8 +118,9 @@ public class Bipartition_8_values {
             int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1]);
 
             int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
-            //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed
+            //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed//
             //compute scores according to status.
+           // System.out.println(quartet.toString()+" "+status_quartet);
             switch (status_quartet) {
                 case DefaultValues.SATISFIED:
                     this.numSatisfied++;

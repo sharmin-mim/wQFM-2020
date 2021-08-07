@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import phylonet.tree.io.ParseException;
 import phylonet.tree.model.sti.STITree;
@@ -176,7 +177,7 @@ public class TreeHandler {
     }
 
     //eg: a b c d
-    public static String getStarTree(List<Integer> taxa_list_int) {
+    public static String getStarTree(Set<Integer> taxa_list_int) {
         if (taxa_list_int.isEmpty()) {
             return "();";
         }

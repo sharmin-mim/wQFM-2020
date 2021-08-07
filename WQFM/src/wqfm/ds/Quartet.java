@@ -70,52 +70,47 @@ public class Quartet {
 
     public Quartet(String s) {
         //ADDITIONALLY append to the map and reverse map.
+//    	System.out.println(s);
+//    	s = s.replace(" ", "");
+//    	String[] qq = s.split("\\(\\(|,|\\),\\(|\\)\\);");
+//    	for (String string : qq) {
+//			System.out.println(string);
+//		}
+//    	System.out.println("............ "+qq.length);
         s = s.replace(" ", "");
         s = s.replace(";", ",");
         s = s.replace("(", "");
         s = s.replace(")", ""); // Finally end up with A,B,C,D,41.0
         String[] arr = s.split(",");
-        int a, b, c, d;
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[0]) == true) {
-            a = InitialTable.map_of_str_vs_int_tax_list.get(arr[0]);
-        } else { //THIS taxon doesn't exist.
-            a = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[0], a);
-            InitialTable.map_of_int_vs_str_tax_list.put(a, arr[0]);
-        }
-
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[1]) == true) {
-            b = InitialTable.map_of_str_vs_int_tax_list.get(arr[1]);
-        } else { //THIS taxon doesn't exist.
-            b = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[1], b);
-            InitialTable.map_of_int_vs_str_tax_list.put(b, arr[1]);
-        }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[2]) == true) {
-            c = InitialTable.map_of_str_vs_int_tax_list.get(arr[2]);
-        } else { //THIS taxon doesn't exist.
-            c = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[2], c);
-            InitialTable.map_of_int_vs_str_tax_list.put(c, arr[2]);
-        }
-        if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[3]) == true) {
-            d = InitialTable.map_of_str_vs_int_tax_list.get(arr[3]);
-        } else { //THIS taxon doesn't exist.
-            d = InitialTable.TAXA_COUNTER;
-            InitialTable.TAXA_COUNTER++;
-            InitialTable.map_of_str_vs_int_tax_list.put(arr[3], d);
-            InitialTable.map_of_int_vs_str_tax_list.put(d, arr[3]);
-        }
-
-        initialiseQuartet(a, b, c, d, Double.parseDouble(arr[4]));
+                
+        //mim
+        int[] a = new int[4];
+        for (int i = 0; i < 4; i++) {
+            if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[i]) == true) {
+                a[i] = InitialTable.map_of_str_vs_int_tax_list.get(arr[i]);
+            } else { //THIS taxon doesn't exist.
+                a[i] = InitialTable.TAXA_COUNTER;
+                InitialTable.TAXA_COUNTER++;
+                InitialTable.map_of_str_vs_int_tax_list.put(arr[i], a[i]);
+                InitialTable.initial_map_of_int_vs_tax_property.put(a[i], new Taxa(arr[i]));
+               // InitialTable.map_of_int_vs_str_tax_list.put(a[i], arr[i]);
+            }
+		}
+        initialiseQuartet(a[0], a[1], a[2], a[3], Double.parseDouble(arr[4]));
+        //
 
 //        initialiseQuartet(arr[0], arr[1], arr[2], arr[3], Double.parseDouble(arr[4]));
     }
 
-    @Override
+    
+    public double getWeight() {
+		return weight;
+	}
+    
+    
+
+
+	@Override
     public String toString() {
         String s = "((" + this.taxa_sisters_left[0] + "," + this.taxa_sisters_left[1] + "),(" + this.taxa_sisters_right[0] + "," + this.taxa_sisters_right[1] + ")); " + String.valueOf(this.weight);
         return s;

@@ -6,12 +6,16 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import wqfm.bip.Bipartition_8_values;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.FMResultObject;
 import wqfm.ds.InitialTable;
 import wqfm.ds.Quartet;
+import wqfm.ds.Taxa;
 import wqfm.utils.Helper;
 import wqfm.utils.TreeHandler;
 import wqfm.bip.WeightedPartitionScores;
@@ -38,15 +42,30 @@ public class FMRunner {
         System.out.println(InitialTable.TAXA_COUNTER);
 
         System.out.println(InitialTable.map_of_str_vs_int_tax_list);
-        System.out.println(InitialTable.map_of_int_vs_str_tax_list);
+        InitialTable.map_of_str_vs_int_tax_list.clear();
+        //System.out.println(InitialTable.map_of_int_vs_str_tax_list);
+        
+        //no need to show. will comment out
+//        for (int i = 0; i < InitialTable.TAXA_COUNTER; i++) {
+//			System.out.print(i +"="+InitialTable.array_of_int_vs_str_tax_list[i]+" ");
+//		}
+//        System.out.println();
+        customDS.map_of_int_vs_tax_property = InitialTable.initial_map_of_int_vs_tax_property;
+        //customDS.fillUpTaxaList(InitialTable.TAXA_COUNTER);
 
         String final_tree = runner.recursiveDivideAndConquer(customDS, level, initialTable); //customDS will have (P, Q, Q_relevant etc) all the params needed.
         System.out.println("\n\n[L 49.] FMRunner: final tree return");
 
 //        System.out.println(final_tree);
-        String final_tree_decoded = Helper.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
+        //String final_tree_decoded = Helper.getFinalTreeFromMap(final_tree, InitialTable.map_of_int_vs_str_tax_list);
+        String final_tree_decoded = Helper.getFinalTreeFromArrayOfIntVsStr2(final_tree, InitialTable.initial_map_of_int_vs_tax_property);
         System.out.println(final_tree_decoded);
         Helper.writeToFile(final_tree_decoded, Config.OUTPUT_FILE_NAME);
+        
+        //System.out.println(" Length of initial map of str vs int = "+InitialTable.map_of_int_vs_str_tax_list.size());
+        //System.out.println(" Length of initial array of int vs str = "+InitialTable.array_of_int_vs_str_tax_list.length);
+        System.out.println(" Length of initial taxa map = "+InitialTable.initial_map_of_int_vs_tax_property.size());
+        //System.out.println("Final-Num-Quartets = " + initialTable.sizeTable());
         
         return final_tree_decoded;
     }
@@ -57,18 +76,29 @@ public class FMRunner {
         if (level == 0) { //only do this during level 0 [at the START]
             customDS_this_level.setInitialTableReference(initialTable); //change reference of initial table.
         }
-        customDS_this_level.sortQuartetIndicesMap(); //sort the quartet-index map for initial-bipartition-computation [NOT set of quartets]
+        
+//        long time_1 = System.currentTimeMillis(); //calculate starting time
+        customDS_this_level.initial_table1_of_list_of_quartets.sortQuartetListBasedOnWeight();//mim
+//        long time_del = System.currentTimeMillis() - time_1;
+//        long minutes = (time_del / 1000) / 60;
+//        long seconds = (time_del / 1000) % 60;
+//        System.out.format("\nSorting Time = %d ms ==> %d minutes and %d seconds.\n", time_del, minutes, seconds);
+//        System.out.println("================= **** ======================== **** ====================");
+        
+        
+//        customDS_this_level.sortQuartetIndicesMap(); //sort the quartet-index map for initial-bipartition-computation [NOT set of quartets]
+        
+//        if (level == 0) { //only do it for the initial step, other levels will be passed as parameters
+//            customDS_this_level.fillUpTaxaList(); //fill-up the taxa list
+//            System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
+//        }
+       // System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
         customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
-        if (level == 0) { //only do it for the initial step, other levels will be passed as parameters
-            customDS_this_level.fillUpTaxaList(); //fill-up the taxa list
-            System.out.println("Total Num-Taxa = " + customDS_this_level.taxa_list_int.size());
-        }
-
         /////////////////// TERMINATING CONDITIONS \\\\\\\\\\\\\\\\\\\\\\\\
         // |P| <= 3 OR |Q|.isEmpty() ... return star over taxa list{P}
-        if ((customDS_this_level.taxa_list_int.size() <= 3)
-                || (customDS_this_level.quartet_indices_list_unsorted.isEmpty())) {
-            String starTree = TreeHandler.getStarTree(customDS_this_level.taxa_list_int); //depth-one tree
+        if ((customDS_this_level.map_of_int_vs_tax_property.size() <= 3)
+                || (customDS_this_level.initial_table1_of_list_of_quartets.list_quartets.isEmpty())) {
+            String starTree = TreeHandler.getStarTree(customDS_this_level.map_of_int_vs_tax_property.keySet()); //depth-one tree
             return starTree;
         }
 
@@ -81,13 +111,15 @@ public class FMRunner {
 
         if (Config.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
             System.out.println("L 84. FMComputer. Printing initialBipartition.");
-            Helper.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
+//            Helper.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
+            Helper.printPartition2(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.initial_map_of_int_vs_tax_property);
         }
 
         Bipartition_8_values initialBip_8_vals = new Bipartition_8_values();
         initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
         System.out.println(WeightedPartitionScores.GET_PARTITION_SCORE_PRINT() + " LEVEL: " + level + ", ALPHA: " + WeightedPartitionScores.ALPHA_PARTITION_SCORE + ", BETA: " + WeightedPartitionScores.BETA_PARTITION_SCORE);
 
+        //System.out.println(initialBip_8_vals.toString());
         FMComputer fmComputerObject = new FMComputer(customDS_this_level, mapInitialBipartition, initialBip_8_vals, level);
         FMResultObject fmResultObject = fmComputerObject.run_FM_Algorithm_Whole();
 
@@ -139,8 +171,8 @@ public class FMRunner {
         // No issues with STAR.
         Quartet quartet = new Quartet(line);
         initialTable.addToListOfQuartets(quartet); //add to initial-quartets-single-list
-        int idx_qrt_in_table_1 = initialTable.sizeTable() - 1; //size - 1 is the last index
-        customDS.quartet_indices_list_unsorted.add(idx_qrt_in_table_1);
+//        int idx_qrt_in_table_1 = initialTable.sizeTable() - 1; //size - 1 is the last index
+//        customDS.quartet_indices_list_unsorted.add(idx_qrt_in_table_1);
     }
 
     //BufferedReader is used here since BufferedReader is faster than Scanner.readLine
@@ -169,6 +201,15 @@ public class FMRunner {
                 System.exit(-1);
             }
         }
+        //mim
+       // initialTable.sortQuartetListBasedOnWeight();
+//        initialTable.array_of_int_vs_str_tax_list = new String[initialTable.TAXA_COUNTER];
+//        for (String tax_name : initialTable.map_of_str_vs_int_tax_list.keySet()) {
+//        	//System.out.println(initialTable.map_of_str_vs_int_tax_list.get(tax_name)+" -> "+tax_name);
+//        	initialTable.array_of_int_vs_str_tax_list[initialTable.map_of_str_vs_int_tax_list.get(tax_name)]=tax_name;
+//        	//customDS.map_of_int_vs_tax_property.put(InitialTable.map_of_str_vs_int_tax_list.get(tax_name), new Taxa(tax_name));
+//		}
+        //mim
         //FeatureComputer.Compute_Feature(initialTable.get_QuartetList());
 
     }

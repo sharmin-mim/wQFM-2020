@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import wqfm.ds.InitialTable;
+import wqfm.ds.Taxa;
 import wqfm.configs.DefaultValues;
 
 /**
@@ -160,8 +161,18 @@ public class Helper {
                 .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x)) // x -> reverse_mapping.get(x)
                 .collect(Collectors.joining(", "));
     }
+    private static String getKeysWithSpecifiedValue2(Map<Integer, Integer> map, int val, Map<Integer, Taxa> reverse_mapping) {
+        return map.keySet()
+                .stream()
+                .filter((t) -> {
+                    return map.get(t) == val;
+                })
+                .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x).taxa_name) // x -> reverse_mapping.get(x)// mim->check again
+                .collect(Collectors.joining(", "));
+    }
+    
 
-    public static String getPartition(Map<Integer, Integer> partition_map,
+	public static String getPartition(Map<Integer, Integer> partition_map,
             int left_partition, int right_partition,
             Map<Integer, String> reverse_mapping) {
 
@@ -177,6 +188,22 @@ public class Helper {
 
         return bld.toString();
     }
+    public static String getPartition2(Map<Integer, Integer> partition_map,
+            int left_partition, int right_partition,
+            Map<Integer, Taxa> reverse_mapping) {
+
+        StringBuilder bld = new StringBuilder();
+
+        bld
+                .append("LEFT: ")
+                .append(getKeysWithSpecifiedValue2(partition_map, left_partition, reverse_mapping))
+                .append("\n")
+                .append("RIGHT: ")
+                .append(getKeysWithSpecifiedValue2(partition_map, right_partition, reverse_mapping))
+                .append("\n");
+
+        return bld.toString();
+    }
 
     public static void printPartition(Map<Integer, Integer> partition_map,
             int left_partition, int right_partition,
@@ -184,13 +211,33 @@ public class Helper {
 
         System.out.println(getPartition(partition_map, left_partition, right_partition, reverse_mapping));
     }
+    public static void printPartition2(Map<Integer, Integer> partition_map,
+            int left_partition, int right_partition,
+            Map<Integer, Taxa> reverse_mapping) {
+
+        System.out.println(getPartition2(partition_map, left_partition, right_partition, reverse_mapping));
+    }
 
     private static String getDummyName(int x) {
         return "DUM_" + Integer.toString(x);
     }
 
+//    public static String getStringMappedName(int x) {
+//        String s = InitialTable.map_of_int_vs_str_tax_list.get(x);
+//        return (s != null) ? s : getDummyName(x);
+//    }
     public static String getStringMappedName(int x) {
-        String s = InitialTable.map_of_int_vs_str_tax_list.get(x);
+
+//        String s;
+//    	if (x < InitialTable.array_of_int_vs_str_tax_list.length ) {
+//			s = InitialTable.array_of_int_vs_str_tax_list[x];
+//			return s;
+//		} else {
+//			return getDummyName(x);
+//
+//		}
+        //return (s != null) ? s : getDummyName(x);
+        String s = InitialTable.initial_map_of_int_vs_tax_property.get(x).taxa_name;
         return (s != null) ? s : getDummyName(x);
     }
 
@@ -249,6 +296,45 @@ public class Helper {
                 // System.out.println("i: "+i+ " j: "+j);
                 // System.out.println("Key: "+ key);
                 String val = map_of_int_vs_str.get(Integer.parseInt(key.trim()));
+                
+               // String val = array_of_int_vs_str[Integer.parseInt(key.trim())];
+                //System.out.println(val);
+                decodedTree += val;
+                i += (j - 1 - i);
+            } else {
+                decodedTree += c;
+            }
+            //  System.out.println(finalTree.charAt(i));
+
+        }
+//        for(int key: map_of_int_vs_str.keySet()){
+//            System.out.println("<<REPLACING key=" + key + ", with val=" + map_of_int_vs_str.get(key) + ">>");
+//            replaced = replaced.replace(String.valueOf(key), map_of_int_vs_str.get(key));
+//        }
+        return decodedTree;
+    }
+    public static String getFinalTreeFromArrayOfIntVsStr(String finalTree,
+            String[] array_of_int_vs_str) {
+
+        String decodedTree = "";
+        for (int i = 0; i < finalTree.length(); i++) {
+            char c = finalTree.charAt(i);
+            if (c != '(' && c != ')' && c != ',' && c != ';') {
+                String key = "";
+                int j;
+                for (j = i + 1; j < finalTree.length(); j++) {
+                    char c1 = finalTree.charAt(j);
+                    if (c1 == ')' || c1 == '(' || c1 == ',' || c1 == ';') {
+                        break;
+                    }
+                }
+                // System.out.println(j);
+                key = finalTree.substring(i, j);
+                // System.out.println("i: "+i+ " j: "+j);
+                // System.out.println("Key: "+ key);
+               // String val = map_of_int_vs_str.get(Integer.parseInt(key.trim()));
+                
+                String val = array_of_int_vs_str[Integer.parseInt(key.trim())];
                 //System.out.println(val);
                 decodedTree += val;
                 i += (j - 1 - i);
@@ -284,5 +370,45 @@ public class Helper {
         
         return (map1.equals(newFinalMap));
     }
+
+	public static String getFinalTreeFromArrayOfIntVsStr2(String final_tree,
+			Map<Integer, Taxa> initial_map_of_int_vs_tax_property) {
+
+
+        String decodedTree = "";
+        for (int i = 0; i < final_tree.length(); i++) {
+            char c = final_tree.charAt(i);
+            if (c != '(' && c != ')' && c != ',' && c != ';') {
+                String key = "";
+                int j;
+                for (j = i + 1; j < final_tree.length(); j++) {
+                    char c1 = final_tree.charAt(j);
+                    if (c1 == ')' || c1 == '(' || c1 == ',' || c1 == ';') {
+                        break;
+                    }
+                }
+                // System.out.println(j);
+                key = final_tree.substring(i, j);
+                // System.out.println("i: "+i+ " j: "+j);
+                // System.out.println("Key: "+ key);
+               // String val = map_of_int_vs_str.get(Integer.parseInt(key.trim()));
+                
+                String val = initial_map_of_int_vs_tax_property.get(Integer.parseInt(key.trim())).taxa_name;
+                //System.out.println(val);
+                decodedTree += val;
+                i += (j - 1 - i);
+            } else {
+                decodedTree += c;
+            }
+            //  System.out.println(finalTree.charAt(i));
+
+        }
+//        for(int key: map_of_int_vs_str.keySet()){
+//            System.out.println("<<REPLACING key=" + key + ", with val=" + map_of_int_vs_str.get(key) + ">>");
+//            replaced = replaced.replace(String.valueOf(key), map_of_int_vs_str.get(key));
+//        }
+        return decodedTree;
+    
+	}
 
 }
