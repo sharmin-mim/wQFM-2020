@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import wqfm.bip.Bipartition_8_values;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.FMResultObject;
@@ -117,6 +120,7 @@ public class FMRunner {
 
         Bipartition_8_values initialBip_8_vals = new Bipartition_8_values();
         initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
+        //System.out.println("-----------initial 8 vals--------\n"+initialBip_8_vals);
         System.out.println(WeightedPartitionScores.GET_PARTITION_SCORE_PRINT() + " LEVEL: " + level + ", ALPHA: " + WeightedPartitionScores.ALPHA_PARTITION_SCORE + ", BETA: " + WeightedPartitionScores.BETA_PARTITION_SCORE);
 
         //System.out.println(initialBip_8_vals.toString());
@@ -136,9 +140,26 @@ public class FMRunner {
         //Debug printing end
         /////////////////// Beginning of Recursion \\\\\\\\\\\\\\\\\\\\\\\\\\\
         int dummyTaxon = fmResultObject.dummyTaxonThisLevel;
-        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, initialTable);
+        
+        final int final_level = level;
+        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> recursiveDivideAndConquer(customDS_left, final_level, initialTable));
         String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
-        String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
+        String left_tree_unrooted = null;
+			try {
+				left_tree_unrooted = cf.get();
+			} catch (InterruptedException e) {
+				//e.printStackTrace();
+			} catch (ExecutionException e) {
+				//e.printStackTrace();
+			}
+
+			//s = merge(s1,s2,extra);
+		String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
+        
+        
+//        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, initialTable);
+//        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
+//        String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
         return merged_tree;
     }
 

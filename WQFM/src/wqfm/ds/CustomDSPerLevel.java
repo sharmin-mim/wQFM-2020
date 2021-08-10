@@ -106,18 +106,18 @@ public class CustomDSPerLevel {
             Quartet q = this.initial_table1_of_list_of_quartets.get(index_qrt);
 
             for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Do for left-sisters ... push to map THIS quartet's row,col
-                int taxon = q.taxa_sisters_left[i];
+                //int taxon = q.taxa_sisters_left[i];
 //                if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
 //                    this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon
 //                }
-                this.map_of_int_vs_tax_property.get(taxon).relevant_quartet_indices.add(index_qrt);
+                q.taxa_sisters_left[i].relevant_quartet_indices.add(index_qrt);
             }
             for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Repeat the same for right-sisters
-                int taxon = q.taxa_sisters_right[i];
+               // int taxon = q.taxa_sisters_right[i];
 //                if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
 //                    this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon
 //                }
-                this.map_of_int_vs_tax_property.get(taxon).relevant_quartet_indices.add(index_qrt);
+                q.taxa_sisters_right[i].relevant_quartet_indices.add(index_qrt);
             }
         }
     }

@@ -1,6 +1,6 @@
 package wqfm.ds;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import wqfm.configs.Config;
 import java.util.HashMap;
@@ -57,24 +57,40 @@ public class FMResultObject {
         });
         
         //Taxa dummy_taxon = new Taxa();
+        Taxa left_dummy_taxon = new Taxa(dummyTaxonThisLevel);
+        Taxa right_dummy_taxon = new Taxa(dummyTaxonThisLevel);//change needed//later I will treat them as different taxa because this will create problem during multithrading.
 
         //Add dummy taxon to both partitions.
-        this.customDS_left_partition.map_of_int_vs_tax_property.put(dummyTaxonThisLevel, new Taxa());
-        this.customDS_right_partition.map_of_int_vs_tax_property.put(dummyTaxonThisLevel, new Taxa());
+        this.customDS_left_partition.map_of_int_vs_tax_property.put(dummyTaxonThisLevel, left_dummy_taxon);
+        this.customDS_right_partition.map_of_int_vs_tax_property.put(dummyTaxonThisLevel, right_dummy_taxon);
 //        this.customDS_left_partition.taxa_list_int.add(dummyTaxonThisLevel);
 //        this.customDS_right_partition.taxa_list_int.add(dummyTaxonThisLevel);
         
-        System.out.println("Left partition");
-        System.out.println(this.customDS_left_partition.map_of_int_vs_tax_property.keySet());
-        System.out.println("Right partition");
-        System.out.println(this.customDS_right_partition.map_of_int_vs_tax_property.keySet());
+//        System.out.println("Left partition");
+//        System.out.println(this.customDS_left_partition.map_of_int_vs_tax_property.keySet());
+//        System.out.println("Right partition");
+//        System.out.println(this.customDS_right_partition.map_of_int_vs_tax_property.keySet());
         
-        
+//        for (int itr = 0; itr < this.customDS_initial_this_level.initial_table1_of_list_of_quartets.sizeTable(); itr++) {
+//            // int qrt_idx = this.customDS_initial_this_level.quartet_indices_list_unsorted.get(itr); //add to new lists of customDS
+//         	
+//             Quartet quartet_parent = this.customDS_initial_this_level.initial_table1_of_list_of_quartets.get(itr);
+//         	System.out.println(quartet_parent.taxa_sisters_left[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//        			quartet_parent.taxa_sisters_right[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_right[1].get_taxa_int_name());
+//         }
         //System.out.println(".................................Before size of initial table ="+this.customDS_initial_this_level.initial_table1_of_list_of_quartets.sizeTable());
         this.customDS_initial_this_level.initial_table1_of_list_of_quartets.list_quartets
         	.removeIf(quartet-> (quartet.quartet_status==DefaultValues.SATISFIED || quartet.quartet_status==DefaultValues.VIOLATED));
         //System.out.println(".................................After size of initial table ="+this.customDS_initial_this_level.initial_table1_of_list_of_quartets.sizeTable());
       
+//        for (int itr = 0; itr < this.customDS_initial_this_level.initial_table1_of_list_of_quartets.sizeTable(); itr++) {
+//            // int qrt_idx = this.customDS_initial_this_level.quartet_indices_list_unsorted.get(itr); //add to new lists of customDS
+//         	
+//             Quartet quartet_parent = this.customDS_initial_this_level.initial_table1_of_list_of_quartets.get(itr);
+//         	System.out.println("............"+quartet_parent.taxa_sisters_left[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//        			quartet_parent.taxa_sisters_right[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_right[1].get_taxa_int_name());
+//         }
+//        
         //1. Traverse each quartet, find the deferred and blank quartets and pass to next.
         //System.out.println(".................List of quartet........................");
         for (int itr = 0; itr < this.customDS_initial_this_level.initial_table1_of_list_of_quartets.sizeTable(); itr++) {
@@ -82,10 +98,13 @@ public class FMResultObject {
         	
             Quartet quartet_parent = this.customDS_initial_this_level.initial_table1_of_list_of_quartets.get(itr);
             // find quartet's status.
-            int left_1_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_left[0]);
-            int left_2_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_left[1]);
-            int right_1_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[0]);
-            int right_2_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[1]);
+//        	System.out.println(quartet_parent.taxa_sisters_left[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//        			quartet_parent.taxa_sisters_right[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_right[1].get_taxa_int_name());
+//            System.out.println("quartet_parent.taxa_sisters_left[0].taxa_int_name = "+quartet_parent.taxa_sisters_left[0].taxa_int_name);
+            int left_1_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_left[0].taxa_int_name);
+            int left_2_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_left[1].taxa_int_name);
+            int right_1_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[0].taxa_int_name);
+            int right_2_partition = mapOfBipartition.get(quartet_parent.taxa_sisters_right[1].taxa_int_name);
 
             //int quartet_status = TaxaUtils.findQuartetStatus(left_1_partition, left_2_partition, right_1_partition, right_2_partition);
             int quartet_status = quartet_parent.quartet_status;//mim..........does work
@@ -109,7 +128,9 @@ public class FMResultObject {
                 int[] arr_bipartition = {left_1_partition, left_2_partition, right_1_partition, right_2_partition};
                 int commonBipartitionValue = findCommonBipartition(arr_bipartition); //find the common bipartition [i.e. whether q goes to Q_left or Q_right]
 //                System.out.println(">> FMResultObject (line 64) parent qrt = " + quartet_parent + " bip = " + mapOfBipartition);
-                Quartet newQuartetWithDummy = replaceExistingQuartetWithDummyNode(quartet_parent, arr_bipartition, commonBipartitionValue); //Find the new quartet WITH dummy node [replaces uncommon tax]
+//             	System.out.println("............"+quartet_parent.taxa_sisters_left[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//    			quartet_parent.taxa_sisters_right[0].get_taxa_int_name()+","+quartet_parent.taxa_sisters_right[1].get_taxa_int_name());
+                Quartet newQuartetWithDummy = replaceExistingQuartetWithDummyNode(quartet_parent, arr_bipartition, commonBipartitionValue, left_dummy_taxon, right_dummy_taxon); //Find the new quartet WITH dummy node [replaces uncommon tax]
 
                 // do not add yet, first put to map with added weight eg. 1,2|5,11 and 1,2|5,15 will be 1,2|5,X with weight = w1+w2
                 if (this.map_quartet_of_dummy_with_added_weights_and_partition.containsKey(newQuartetWithDummy) == false) { //this quartet-of-dummy DOESN't exist.
@@ -143,6 +164,14 @@ public class FMResultObject {
 
         }
         this.customDS_initial_this_level.initial_table1_of_list_of_quartets.list_quartets.clear();
+        
+//        System.out.println("............................................................Dummy_____________________________");
+//        this.map_quartet_dummy_with_counts.keySet().forEach((new_quartet) -> {
+//        	 System.out.println(new_quartet.taxa_sisters_left[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//             		new_quartet.taxa_sisters_right[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_right[1].get_taxa_int_name()+":"+new_quartet.weight+" -> "+
+//             		this.map_quartet_dummy_with_counts.get(new_quartet));
+//        });
+//        System.out.println("............................................................Dummy_____________________________");
 
         //2. Now keep adding the corrected-weighted-quartets to initial-table
         this.map_quartet_of_dummy_with_added_weights_and_partition.keySet().forEach((q_with_dummy) -> {
@@ -167,17 +196,24 @@ public class FMResultObject {
 //            	this.customDS_left_partition.quartet_indices_list_unsorted
 //            		.add(this.customDS_left_partition.initial_table1_of_list_of_quartets.sizeTable() - 1);
                // this.customDS_left_partition.quartet_indices_list_unsorted.add(idx_quartet_newly_added);
+//                System.out.println("Left"+new_quartet.taxa_sisters_left[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//                		new_quartet.taxa_sisters_right[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_right[1].get_taxa_int_name()+":"+new_quartet.weight);
             } else if (pair_val.partition_int == DefaultValues.RIGHT_PARTITION) {
             	this.customDS_right_partition.initial_table1_of_list_of_quartets.addToListOfQuartets(new_quartet);
+//            	System.out.println("right"+new_quartet.taxa_sisters_left[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//                		new_quartet.taxa_sisters_right[0].get_taxa_int_name()+","+new_quartet.taxa_sisters_right[1].get_taxa_int_name()+":"+new_quartet.weight);
 //                this.customDS_right_partition.quartet_indices_list_unsorted
 //                	.add(this.customDS_right_partition.initial_table1_of_list_of_quartets.sizeTable() - 1);
                // this.customDS_right_partition.quartet_indices_list_unsorted.add(idx_quartet_newly_added);
             }
         });
+        
         //finally add the references to left and right partitions.
 
         //this.customDS_left_partition.initial_table1_of_list_of_quartets.assignByReference(this.customDS_initial_this_level.initial_table1_of_list_of_quartets);
         //this.customDS_right_partition.initial_table1_of_list_of_quartets.assignByReference(this.customDS_initial_this_level.initial_table1_of_list_of_quartets);
+        
+
     }
 
     private int findCommonBipartition(int[] arr) {
@@ -191,8 +227,11 @@ public class FMResultObject {
         }
     }
 
-    private Quartet replaceExistingQuartetWithDummyNode(Quartet quartet, int[] arr, int commonBipartition) {
+    private Quartet replaceExistingQuartetWithDummyNode(Quartet quartet, int[] arr, int commonBipartition, Taxa left_dummy_taxon, Taxa right_dummy_taxon) {
         Quartet q = new Quartet(quartet);
+//    	System.out.println(quartet.taxa_sisters_left[0].get_taxa_int_name()+","+quartet.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//		quartet.taxa_sisters_right[0].get_taxa_int_name()+","+quartet.taxa_sisters_right[1].get_taxa_int_name());
+
         int idx = -1;
         //finds which idx contains the uncommon bipartition
         for (int i = 0; i < arr.length; i++) {
@@ -203,20 +242,42 @@ public class FMResultObject {
         //returns the taxon name of the uncommon bipartition
         switch (idx) {
             case DefaultValues.LEFT_SISTER_1_IDX:
-                q.taxa_sisters_left[0] = this.dummyTaxonThisLevel;
+            	if (commonBipartition == DefaultValues.LEFT_PARTITION) {
+            		q.taxa_sisters_left[0] = left_dummy_taxon;
+				} else {
+					q.taxa_sisters_left[0] = right_dummy_taxon;
+				}
+                //q.taxa_sisters_left[0] = left_dummy_taxon;
                 break;
             case DefaultValues.LEFT_SISTER_2_IDX:
-                q.taxa_sisters_left[1] = this.dummyTaxonThisLevel;
+            	if (commonBipartition == DefaultValues.LEFT_PARTITION) {
+            		q.taxa_sisters_left[1] = left_dummy_taxon;
+				} else {
+					q.taxa_sisters_left[1] = right_dummy_taxon;
+				}
+                //q.taxa_sisters_left[1] = left_dummy_taxon;
                 break;
             case DefaultValues.RIGHT_SISTER_1_IDX:
-                q.taxa_sisters_right[0] = this.dummyTaxonThisLevel;
+            	if (commonBipartition == DefaultValues.LEFT_PARTITION) {
+            		q.taxa_sisters_right[0] = left_dummy_taxon;
+				} else {
+					q.taxa_sisters_right[0] = right_dummy_taxon;
+				}
+                //q.taxa_sisters_right[0] = right_dummy_taxon;
                 break;
             case DefaultValues.RIGHT_SISTER_2_IDX:
-                q.taxa_sisters_right[1] = this.dummyTaxonThisLevel;
+            	if (commonBipartition == DefaultValues.LEFT_PARTITION) {
+            		q.taxa_sisters_right[1] = left_dummy_taxon;
+				} else {
+					q.taxa_sisters_right[1] = right_dummy_taxon;
+				}
+                //q.taxa_sisters_right[1] = right_dummy_taxon;
                 break;
             default:
                 break;
         }
+//        System.out.println(q.taxa_sisters_left[0].get_taxa_int_name()+","+q.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//        		q.taxa_sisters_right[0].get_taxa_int_name()+","+q.taxa_sisters_right[1].get_taxa_int_name());
         q.sort_quartet_taxa_names();
         return q;
     }

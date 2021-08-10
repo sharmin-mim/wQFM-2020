@@ -6,16 +6,16 @@
 package wqfm.bip;
 
 import wqfm.configs.Config;
-import java.util.Arrays;
+
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Map;
 //import javafx.util.Pair;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.Quartet;
 import wqfm.feature.FeatureComputer;
-import wqfm.main.Main;
+
 import wqfm.utils.TaxaUtils;
 import wqfm.configs.DefaultValues;
 
@@ -112,35 +112,49 @@ public class Bipartition_8_values {
             }
 
             //obtain the quartet's taxa's bipartitions
-            int left_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[0]);
-            int left_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[1]);
-            int right_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[0]);
-            int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1]);
+            int left_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[0].taxa_int_name);
+            int left_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[1].taxa_int_name);
+            int right_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[0].taxa_int_name);
+            int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1].taxa_int_name);
 
             int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
             //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed//
             //compute scores according to status.
-           // System.out.println(quartet.toString()+" "+status_quartet);
+           // System.out.println(quartet.toString()+" -> "+status_quartet);
+            //String stat = "";
             switch (status_quartet) {
                 case DefaultValues.SATISFIED:
+                	//stat = "s";
                     this.numSatisfied++;
-                    this.wtSatisfied += quartet.weight;
+                    //System.out.println("this.wtSatisfied = "+ this.wtSatisfied + ", quartet.weight ="+quartet.weight);
+                    //double m = (double) 4.835391 + (double)4.648647;
+                    //System.out.println("m ="+m);
+                    this.wtSatisfied = this.wtSatisfied+ quartet.weight;
+                    //this.wtSatisfied += quartet.weight;
+                   // System.out.println("this.wtSatisfied = "+ this.wtSatisfied);
+                   
                     break;
                 case DefaultValues.VIOLATED:
+                	//stat = "v";
                     this.numViolated++;
                     this.wtViolated += quartet.weight;
                     break;
                 case DefaultValues.DEFERRED:
+                	//stat = "d";
                     this.numDeferred++;
                     this.wtDeferred += quartet.weight;
                     break;
                 case DefaultValues.BLANK:
+                	//stat = "b";
                     this.numBlank++;
                     this.wtBlank += quartet.weight;
                     break;
                 default:
                     break;
             }
+//            System.out.println(quartet.toString()+" -> "+stat);
+//            System.out.println(this);
+
         }
         
         

@@ -1,6 +1,8 @@
 package wqfm.ds;
 
 import java.util.Arrays;
+import java.util.Comparator;
+
 import wqfm.utils.Helper;
 
 /**
@@ -12,8 +14,8 @@ public class Quartet {
     public static int NUM_TAXA_PER_PARTITION = 2;
     public static int TEMP_TAX_TO_SWAP;
 
-    public int[] taxa_sisters_left;// = new String[NUM_TAXA_PER_PARTITION];
-    public int[] taxa_sisters_right;// = new String[NUM_TAXA_PER_PARTITION];
+    public Taxa[] taxa_sisters_left;// = new String[NUM_TAXA_PER_PARTITION];
+    public Taxa[] taxa_sisters_right;// = new String[NUM_TAXA_PER_PARTITION];
     public double weight;
     public int quartet_status;//mim
 
@@ -25,13 +27,13 @@ public class Quartet {
     public String getNamedQuartet() {
         StringBuilder builder = new StringBuilder();
         builder.append("((");
-        builder.append(Helper.getStringMappedName(this.taxa_sisters_left[0]));
+        builder.append(Helper.getStringMappedName(this.taxa_sisters_left[0].taxa_int_name));
         builder.append(",");
-        builder.append(Helper.getStringMappedName(this.taxa_sisters_left[1]));
+        builder.append(Helper.getStringMappedName(this.taxa_sisters_left[1].taxa_int_name));
         builder.append("),(");
-        builder.append(Helper.getStringMappedName(this.taxa_sisters_right[0]));
+        builder.append(Helper.getStringMappedName(this.taxa_sisters_right[0].taxa_int_name));
         builder.append(",");
-        builder.append(Helper.getStringMappedName(this.taxa_sisters_right[1]));
+        builder.append(Helper.getStringMappedName(this.taxa_sisters_right[1].taxa_int_name));
         builder.append(")); ");
         builder.append(Double.toString(this.weight));
         return builder.toString();
@@ -43,11 +45,11 @@ public class Quartet {
         Same with (c,d) for taxa_sisters_right.
         FOR NOW, NOT DOING ABOVE THING
      */
-    public final void initialiseQuartet(int a, int b, int c, int d, double w) {
+    public final void initialiseQuartet(Taxa a, Taxa b, Taxa c, Taxa d, double w) {
         //sorting.
 
-        this.taxa_sisters_left = new int[NUM_TAXA_PER_PARTITION];
-        this.taxa_sisters_right = new int[NUM_TAXA_PER_PARTITION];
+        this.taxa_sisters_left = new Taxa[NUM_TAXA_PER_PARTITION];
+        this.taxa_sisters_right = new Taxa[NUM_TAXA_PER_PARTITION];
 
         this.taxa_sisters_left[0] = a;
         this.taxa_sisters_left[1] = b;
@@ -64,7 +66,7 @@ public class Quartet {
                 q.taxa_sisters_right[0], q.taxa_sisters_right[1], q.weight);
     }
 
-    public Quartet(int a, int b, int c, int d, double w) {
+    public Quartet(Taxa a, Taxa b, Taxa c, Taxa d, double w) {
         initialiseQuartet(a, b, c, d, w);
     }
 
@@ -85,18 +87,21 @@ public class Quartet {
                 
         //mim
         int[] a = new int[4];
+        Taxa[] taxon = new Taxa[4];
         for (int i = 0; i < 4; i++) {
             if (InitialTable.map_of_str_vs_int_tax_list.containsKey(arr[i]) == true) {
                 a[i] = InitialTable.map_of_str_vs_int_tax_list.get(arr[i]);
+                taxon[i] = InitialTable.initial_map_of_int_vs_tax_property.get(a[i]);
             } else { //THIS taxon doesn't exist.
                 a[i] = InitialTable.TAXA_COUNTER;
                 InitialTable.TAXA_COUNTER++;
                 InitialTable.map_of_str_vs_int_tax_list.put(arr[i], a[i]);
-                InitialTable.initial_map_of_int_vs_tax_property.put(a[i], new Taxa(arr[i]));
+                taxon[i] = new Taxa(arr[i], a[i]);
+                InitialTable.initial_map_of_int_vs_tax_property.put(a[i], taxon[i]);
                // InitialTable.map_of_int_vs_str_tax_list.put(a[i], arr[i]);
             }
 		}
-        initialiseQuartet(a[0], a[1], a[2], a[3], Double.parseDouble(arr[4]));
+        initialiseQuartet(taxon[0], taxon[1], taxon[2], taxon[3], Double.parseDouble(arr[4]));
         //
 
 //        initialiseQuartet(arr[0], arr[1], arr[2], arr[3], Double.parseDouble(arr[4]));
@@ -112,7 +117,9 @@ public class Quartet {
 
 	@Override
     public String toString() {
-        String s = "((" + this.taxa_sisters_left[0] + "," + this.taxa_sisters_left[1] + "),(" + this.taxa_sisters_right[0] + "," + this.taxa_sisters_right[1] + ")); " + String.valueOf(this.weight);
+        String s = "((" + this.taxa_sisters_left[0].taxa_int_name + "," + this.taxa_sisters_left[1].taxa_int_name 
+        		+ "),(" + this.taxa_sisters_right[0].taxa_int_name + "," + this.taxa_sisters_right[1].taxa_int_name
+        		+ ")); " + String.valueOf(this.weight);
         return s;
     }
 
@@ -138,18 +145,28 @@ public class Quartet {
 //        String[] left = {this.taxa_sisters_left[0], this.taxa_sisters_left[1]};
 //        String[] right = {this.taxa_sisters_right[0], this.taxa_sisters_right[1]};
 
-        Arrays.sort(this.taxa_sisters_left);
-        Arrays.sort(this.taxa_sisters_right);
+//        Arrays.sort(this.taxa_sisters_left);
+//        Arrays.sort(this.taxa_sisters_right);
+//    	System.out.println(this.taxa_sisters_left[0].get_taxa_int_name()+","+this.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//    			this.taxa_sisters_right[0].get_taxa_int_name()+","+this.taxa_sisters_right[1].get_taxa_int_name());
 
-        if (this.taxa_sisters_left[0] < this.taxa_sisters_right[0]) { //don't swap two sides
+        Arrays.sort(this.taxa_sisters_left, Comparator.comparing(Taxa::get_taxa_int_name));
+        Arrays.sort(this.taxa_sisters_right, Comparator.comparing(Taxa::get_taxa_int_name));
+        
+
+        if (this.taxa_sisters_left[0].taxa_int_name < this.taxa_sisters_right[0].taxa_int_name) { //don't swap two sides
             //no need to swap
         } else {  // swap two sides
             for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) {
-                Quartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
+            	Taxa TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i];
+                //Quartet.TEMP_TAX_TO_SWAP = this.taxa_sisters_left[i].taxa_int_name;
                 this.taxa_sisters_left[i] = this.taxa_sisters_right[i];
-                this.taxa_sisters_right[i] = Quartet.TEMP_TAX_TO_SWAP;
+                this.taxa_sisters_right[i] = TEMP_TAX_TO_SWAP;
             }
         }
+//    	System.out.println(this.taxa_sisters_left[0].get_taxa_int_name()+","+this.taxa_sisters_left[1].get_taxa_int_name()+"|"+
+//    			this.taxa_sisters_right[0].get_taxa_int_name()+","+this.taxa_sisters_right[1].get_taxa_int_name());
+
     }
 
     @Override
