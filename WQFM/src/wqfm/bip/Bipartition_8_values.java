@@ -69,28 +69,58 @@ public class Bipartition_8_values {
     }
 
     public void addRespectiveValue(double weight, int status) {
-        switch (status) {
-            case DefaultValues.SATISFIED:
-                this.numSatisfied++;
-                this.wtSatisfied += weight;
-                break;
-            case DefaultValues.VIOLATED:
-                this.numViolated++;
-                this.wtViolated += weight;
-                break;
-            case DefaultValues.DEFERRED:
-                this.numDeferred++;
-                this.wtDeferred += weight;
-                break;
-            case DefaultValues.BLANK:
-                this.numBlank++;
-                this.wtBlank += weight;
-                break;
-            case DefaultValues.UNKNOWN: // do nothing for this case
-                break;
-            default:
-                break;
-        }
+    	synchronized (this) {
+    		switch (status) {
+	            case DefaultValues.SATISFIED:
+	                this.numSatisfied++;
+	                this.wtSatisfied += weight;
+	                break;
+	            case DefaultValues.VIOLATED:
+	                this.numViolated++;
+	                this.wtViolated += weight;
+	                break;
+	            case DefaultValues.DEFERRED:
+	                this.numDeferred++;
+	                this.wtDeferred += weight;
+	                break;
+	            case DefaultValues.BLANK:
+	                this.numBlank++;
+	                this.wtBlank += weight;
+	                break;
+	            case DefaultValues.UNKNOWN: // do nothing for this case
+	                break;
+	            default:
+	                break;
+	        }
+		}
+        
+    }
+    public void subtractRespectiveValue(double weight, int status) {
+    	synchronized (this) {
+            switch (status) {
+	            case DefaultValues.SATISFIED:
+	                this.numSatisfied--;
+	                this.wtSatisfied -= weight;
+	                break;
+	            case DefaultValues.VIOLATED:
+	                this.numViolated--;
+	                this.wtViolated -= weight;
+	                break;
+	            case DefaultValues.DEFERRED:
+	                this.numDeferred--;
+	                this.wtDeferred -= weight;
+	                break;
+	            case DefaultValues.BLANK:
+	                this.numBlank--;
+	                this.wtBlank -= weight;
+	                break;
+	            case DefaultValues.UNKNOWN: // do nothing for this case
+	                break;
+	            default:
+	                break;
+	        }
+		}
+
     }
 
     private void addRespectiveValue(Quartet q, int status) { // not needed for now.
@@ -103,6 +133,7 @@ public class Bipartition_8_values {
         //  System.out.println("L 100. Bipartition_8_vals: BIPARTITION size : " + map_bipartitions.keySet().size());
         //  System.out.println("Keyset size before populating: " + dictiory_4Tax_sequence.keySet().size());
         //for feature computation
+        
 
         for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
             //Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);

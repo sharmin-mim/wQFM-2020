@@ -10,13 +10,16 @@ import wqfm.bip.Bipartition_8_values;
 public class Taxa {
 	public int taxa_int_name;
 	public String taxa_name;
-	//public int partition;
+	public int partition;
 	public boolean locked;
 	public boolean participated_in_swap;
 	public double gain;
 	public Bipartition_8_values bipartition_8_values;
 	public Map<Integer, Integer> map_final_bipartition;//will delete this map. 
 	public List<Integer> relevant_quartet_indices;
+	
+	public Bipartition_8_values _8_vals_THIS_TAX_before_hypo_swap = new Bipartition_8_values();
+    public Bipartition_8_values _8_vals_THIS_TAX_AFTER_hypo_swap = new Bipartition_8_values();
 	
 	public Taxa(String taxa_name, int taxa_int_name) {
 		this(taxa_int_name);
@@ -42,6 +45,8 @@ public class Taxa {
 		//this.partition = DefaultValues.UNASSIGNED_PARTITION;
 		this.locked = Boolean.FALSE;
 		this.relevant_quartet_indices = new ArrayList<Integer>();
+		this._8_vals_THIS_TAX_AFTER_hypo_swap = new Bipartition_8_values();
+		this._8_vals_THIS_TAX_before_hypo_swap = new Bipartition_8_values();
 	}
 
 
