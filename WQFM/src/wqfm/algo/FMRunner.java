@@ -141,25 +141,25 @@ public class FMRunner {
         /////////////////// Beginning of Recursion \\\\\\\\\\\\\\\\\\\\\\\\\\\
         int dummyTaxon = fmResultObject.dummyTaxonThisLevel;
         
-        final int final_level = level;
-        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> recursiveDivideAndConquer(customDS_left, final_level, initialTable));
-        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
-        String left_tree_unrooted = null;
-			try {
-				left_tree_unrooted = cf.get();
-			} catch (InterruptedException e) {
-				//e.printStackTrace();
-			} catch (ExecutionException e) {
-				//e.printStackTrace();
-			}
-
-			//s = merge(s1,s2,extra);
-		String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
-        
-        
-//        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, initialTable);
+//        final int final_level = level;
+//        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> recursiveDivideAndConquer(customDS_left, final_level, initialTable));
 //        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
-//        String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
+//        String left_tree_unrooted = null;
+//			try {
+//				left_tree_unrooted = cf.get();
+//			} catch (InterruptedException e) {
+//				//e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				//e.printStackTrace();
+//			}
+//
+//			//s = merge(s1,s2,extra);
+//		String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
+        
+        
+        String left_tree_unrooted = recursiveDivideAndConquer(customDS_left, level, initialTable);
+        String right_tree_unrooted = recursiveDivideAndConquer(customDS_right, level, initialTable);
+        String merged_tree = TreeHandler.mergeUnrootedTrees(left_tree_unrooted, right_tree_unrooted, String.valueOf(dummyTaxon));
         return merged_tree;
     }
 

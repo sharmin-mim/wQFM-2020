@@ -15,7 +15,7 @@ public class Taxa {
 	public boolean participated_in_swap;
 	public double gain;
 	public Bipartition_8_values bipartition_8_values;
-	public Map<Integer, Integer> map_final_bipartition;//will delete this map. 
+	//public Map<Integer, Integer> map_final_bipartition;//will delete this map. 
 	public List<Integer> relevant_quartet_indices;
 	
 	public Bipartition_8_values _8_vals_THIS_TAX_before_hypo_swap = new Bipartition_8_values();

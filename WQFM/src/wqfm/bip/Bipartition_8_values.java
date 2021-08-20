@@ -135,61 +135,68 @@ public class Bipartition_8_values {
         //for feature computation
         
 
-        for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
-            //Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
-
-            if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
-                FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
-            }
-
-            //obtain the quartet's taxa's bipartitions
-            int left_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[0].taxa_int_name);
-            int left_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[1].taxa_int_name);
-            int right_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[0].taxa_int_name);
-            int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1].taxa_int_name);
-
-            int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
-            //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed//
-            //compute scores according to status.
-           // System.out.println(quartet.toString()+" -> "+status_quartet);
-            //String stat = "";
-            switch (status_quartet) {
-                case DefaultValues.SATISFIED:
-                	//stat = "s";
-                    this.numSatisfied++;
-                    //System.out.println("this.wtSatisfied = "+ this.wtSatisfied + ", quartet.weight ="+quartet.weight);
-                    //double m = (double) 4.835391 + (double)4.648647;
-                    //System.out.println("m ="+m);
-                    this.wtSatisfied = this.wtSatisfied+ quartet.weight;
-                    //this.wtSatisfied += quartet.weight;
-                   // System.out.println("this.wtSatisfied = "+ this.wtSatisfied);
-                   
-                    break;
-                case DefaultValues.VIOLATED:
-                	//stat = "v";
-                    this.numViolated++;
-                    this.wtViolated += quartet.weight;
-                    break;
-                case DefaultValues.DEFERRED:
-                	//stat = "d";
-                    this.numDeferred++;
-                    this.wtDeferred += quartet.weight;
-                    break;
-                case DefaultValues.BLANK:
-                	//stat = "b";
-                    this.numBlank++;
-                    this.wtBlank += quartet.weight;
-                    break;
-                default:
-                    break;
-            }
-//            System.out.println(quartet.toString()+" -> "+stat);
-//            System.out.println(this);
-
-        }
-        
+//        for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
+//            //Quartet quartet = customDS.initial_table1_of_list_of_quartets.get(idx_quartet);
+//
+//            if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
+//                FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
+//            }
+//
+//            //obtain the quartet's taxa's bipartitions
+////            int left_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[0].taxa_int_name);
+////            int left_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_left[1].taxa_int_name);
+////            int right_sis_1_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[0].taxa_int_name);
+////            int right_sis_2_bip_val = map_bipartitions.get(quartet.taxa_sisters_right[1].taxa_int_name);
+////
+////            int status_quartet = TaxaUtils.findQuartetStatus(left_sis_1_bip_val, left_sis_2_bip_val, right_sis_1_bip_val, right_sis_2_bip_val); //obtain quartet status
+////            //quartet.quartet_status = status_quartet;//mim// I dont understand why output tree changed. //less time needed//
+////            //compute scores according to status.
+////           // System.out.println(quartet.toString()+" -> "+status_quartet);
+////            //String stat = "";
+////            switch (status_quartet) {
+////                case DefaultValues.SATISFIED:
+////                	//stat = "s";
+////                    this.numSatisfied++;
+////                    //System.out.println("this.wtSatisfied = "+ this.wtSatisfied + ", quartet.weight ="+quartet.weight);
+////                    //double m = (double) 4.835391 + (double)4.648647;
+////                    //System.out.println("m ="+m);
+////                    this.wtSatisfied = this.wtSatisfied+ quartet.weight;
+////                    //this.wtSatisfied += quartet.weight;
+////                   // System.out.println("this.wtSatisfied = "+ this.wtSatisfied);
+////                   
+////                    break;
+////                case DefaultValues.VIOLATED:
+////                	//stat = "v";
+////                    this.numViolated++;
+////                    this.wtViolated += quartet.weight;
+////                    break;
+////                case DefaultValues.DEFERRED:
+////                	//stat = "d";
+////                    this.numDeferred++;
+////                    this.wtDeferred += quartet.weight;
+////                    break;
+////                case DefaultValues.BLANK:
+////                	//stat = "b";
+////                    this.numBlank++;
+////                    this.wtBlank += quartet.weight;
+////                    break;
+////                default:
+////                    break;
+////            }
+////            System.out.println(quartet.toString()+" -> "+stat);
+////            System.out.println(this);
+//
+//        }
+//        
+//        
+//        if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
+//            FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, customDS.level);
+//        }
         
         if (Config.PARTITION_SCORE_MODE == DefaultValues.PARTITION_SCORE_FULL_DYNAMIC) {
+            for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
+            	 FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
+            }
             FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, customDS.level);
         }
 
