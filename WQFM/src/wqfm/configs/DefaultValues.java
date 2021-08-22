@@ -92,6 +92,10 @@ public interface DefaultValues {
     public static int QUARTET_SCORE_LEVEL_0_NONE = 0;
     public static int QUARTET_SCORE_LEVEL_1_WQRTS = 1;
     public static int QUARTET_SCORE_LEVEL_2_WQRTS_PERCENT_TOTAL_QUARTETS = 2;
+    
+    
+    // memory constarint
+    public static int MEMORY_CONSTRAINT = 1;// 1 means memory is constrained, 0 means no memory constraints
 
     
     //Helper method for printing quartet's status

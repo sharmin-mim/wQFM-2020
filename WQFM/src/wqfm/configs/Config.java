@@ -33,5 +33,7 @@ public class Config {
     
     
     public static String QUARTET_SCORE_OUTPUT_FILE = "quartet-score-output-file.log";
+    
+    public static int MEMORY_CONSTRAINT = DefaultValues.MEMORY_CONSTRAINT;//1 means memory is constrained, 0 means no memory constraints
 
 }

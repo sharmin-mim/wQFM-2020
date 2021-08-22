@@ -113,13 +113,13 @@ public class InitialBipartition {
 
         Map<Integer, Integer> map_partition = new HashMap<>(); //return this map
 
-        for (int tax : customDS.map_of_int_vs_tax_property .keySet()) { //initially assign all as 0/unassigned
+        for (int tax : customDS.map_of_int_vs_tax_property.keySet()) { //initially assign all as 0/unassigned
             map_partition.put(tax, DefaultValues.UNASSIGNED_PARTITION);
         }
         //System.out.println(map_partition);
-        customDS.map_of_int_vs_tax_property.values().forEach((taxon -> {
-        	 taxon.partition = DefaultValues.UNASSIGNED_PARTITION;
-        }));
+//        customDS.map_of_int_vs_tax_property.values().forEach((taxon -> {
+//        	 taxon.partition = DefaultValues.UNASSIGNED_PARTITION;
+//        }));
         
         int count_unassigned_taxa = customDS.map_of_int_vs_tax_property.size();
         int count_assigned_taxa = 0;
@@ -133,15 +133,15 @@ public class InitialBipartition {
         	
         	//loop_count++;
         	//System.out.println(quartet_under_consideration.toString());
-            int q1 = quartet_under_consideration.taxa_sisters_left[0].taxa_int_name;
-            int q2 = quartet_under_consideration.taxa_sisters_left[1].taxa_int_name;
-            int q3 = quartet_under_consideration.taxa_sisters_right[0].taxa_int_name;
-            int q4 = quartet_under_consideration.taxa_sisters_right[1].taxa_int_name;
+            int q1 = quartet_under_consideration.taxa_sisters_left[0];
+            int q2 = quartet_under_consideration.taxa_sisters_left[1];
+            int q3 = quartet_under_consideration.taxa_sisters_right[0];
+            int q4 = quartet_under_consideration.taxa_sisters_right[1];
             
-            Taxa t1 = quartet_under_consideration.taxa_sisters_left[0];
-            Taxa t2 = quartet_under_consideration.taxa_sisters_left[1];
-            Taxa t3 = quartet_under_consideration.taxa_sisters_right[0];
-            Taxa t4 = quartet_under_consideration.taxa_sisters_right[1];
+            Taxa t1 = customDS.map_of_int_vs_tax_property.get(q1);//quartet_under_consideration.taxa_sisters_left[0];
+            Taxa t2 = customDS.map_of_int_vs_tax_property.get(q2);//quartet_under_consideration.taxa_sisters_left[1];
+            Taxa t3 = customDS.map_of_int_vs_tax_property.get(q3);//quartet_under_consideration.taxa_sisters_right[0];
+            Taxa t4 = customDS.map_of_int_vs_tax_property.get(q4);//quartet_under_consideration.taxa_sisters_right[1];
             
 //        	System.out.println(quartet_under_consideration.taxa_sisters_left[0].get_taxa_int_name()+","
 //        			+quartet_under_consideration.taxa_sisters_left[1].get_taxa_int_name()+"|"

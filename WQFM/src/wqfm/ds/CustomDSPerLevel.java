@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import wqfm.bip.WeightedPartitionScores;
+
 /**
  *
  * @author mahim
@@ -18,6 +20,7 @@ public class CustomDSPerLevel {
     public InitialTable initial_table1_of_list_of_quartets; //immutable [doesn't change, only as reference, is passed]
 
     public int level;
+
 
     //Will mutate per level
     //public List<Integer> quartet_indices_list_unsorted;
@@ -101,8 +104,12 @@ public class CustomDSPerLevel {
 //        }
 //    }
 
-    public void fillRelevantQuartetsMap() { 	
-        for (int index_qrt = 0; index_qrt < this.initial_table1_of_list_of_quartets.sizeTable(); index_qrt++) {
+    public void fillRelevantQuartetsMap() {
+    	int size_of_quartet_table = this.initial_table1_of_list_of_quartets.sizeTable();
+    	this.map_of_int_vs_tax_property.values().forEach((taxon) -> {
+    		taxon.relevant_quartet_indices = new ArrayList<Integer>();
+    	});
+        for (int index_qrt = 0; index_qrt < size_of_quartet_table; index_qrt++) {
             Quartet q = this.initial_table1_of_list_of_quartets.get(index_qrt);
 
             for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Do for left-sisters ... push to map THIS quartet's row,col
@@ -110,14 +117,14 @@ public class CustomDSPerLevel {
 //                if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
 //                    this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon
 //                }
-                q.taxa_sisters_left[i].relevant_quartet_indices.add(index_qrt);
+                this.map_of_int_vs_tax_property.get(q.taxa_sisters_left[i]).relevant_quartet_indices.add(index_qrt);
             }
             for (int i = 0; i < Quartet.NUM_TAXA_PER_PARTITION; i++) { // Repeat the same for right-sisters
                // int taxon = q.taxa_sisters_right[i];
 //                if (this.map_taxa_relevant_quartet_indices.containsKey(taxon) == false) { //map doesn't have an entry yet for THIS taxon
 //                    this.map_taxa_relevant_quartet_indices.put(taxon, new ArrayList<>()); // initialize for THIS taxon
 //                }
-                q.taxa_sisters_right[i].relevant_quartet_indices.add(index_qrt);
+            	this.map_of_int_vs_tax_property.get(q.taxa_sisters_right[i]).relevant_quartet_indices.add(index_qrt);
             }
         }
     }

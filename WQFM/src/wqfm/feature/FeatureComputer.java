@@ -171,8 +171,8 @@ public class FeatureComputer {
     }
 
     public static void makeDictionary(Quartet q, Map<List<Integer>, List<Double>> map_weights_four_tax_seq) {
-        List<Integer> four_tax_sequence = sortTaxaWithinQuartets(q.taxa_sisters_left[0].taxa_int_name, q.taxa_sisters_left[1].taxa_int_name,
-                q.taxa_sisters_right[0].taxa_int_name, q.taxa_sisters_right[1].taxa_int_name);
+        List<Integer> four_tax_sequence = sortTaxaWithinQuartets(q.taxa_sisters_left[0], q.taxa_sisters_left[1],
+                q.taxa_sisters_right[0], q.taxa_sisters_right[1]);
 
         if (map_weights_four_tax_seq.containsKey(four_tax_sequence) == false) { // this 4-tax-seq has no quartet-weights.
             List<Double> list_weights = new ArrayList<>();

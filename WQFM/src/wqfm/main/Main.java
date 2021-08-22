@@ -57,6 +57,10 @@ public class Main implements Callable<Integer> {
 
     @CommandLine.Option(names = {"-qo", "--quartet_score_output_file"}, required = false, description = "(default) null\nIf given, quartet scores will be output here.")
     private String quartetScoreOutputFile = null;
+    
+    @CommandLine.Option(names = {"-mc", "--memory_constraint"}, required = false, description = "(default) mc = 1 means memory is constrained \nmc=0 for no memory constraint.")
+    private int memory_constraint = DefaultValues.MEMORY_CONSTRAINT;
+    
 
     private static void goDebugMode() {
         Config.ANNOTATIONS_LEVEL = DefaultValues.ANNOTATIONS_LEVEL3_QUARTET_SUPPORT_NORMALIZED_MAX;
@@ -76,6 +80,9 @@ public class Main implements Callable<Integer> {
 
         // set partition scores.
         double beta_double = DefaultValues.BETA_DEFAULT_VAL; // 1.0
+        System.out.println();
+        Config.MEMORY_CONSTRAINT = memory_constraint;
+        
         try {
             Bin.WILL_DO_DYNAMIC = false;
             beta_double = Double.parseDouble(this.beta);

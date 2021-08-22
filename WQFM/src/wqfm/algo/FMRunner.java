@@ -96,7 +96,10 @@ public class FMRunner {
 //            System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
 //        }
        // System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
-        customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
+        if (Config.MEMORY_CONSTRAINT == 0) {
+        	customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
+		}
+        
         /////////////////// TERMINATING CONDITIONS \\\\\\\\\\\\\\\\\\\\\\\\
         // |P| <= 3 OR |Q|.isEmpty() ... return star over taxa list{P}
         if ((customDS_this_level.map_of_int_vs_tax_property.size() <= 3)

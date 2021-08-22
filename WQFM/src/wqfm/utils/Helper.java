@@ -148,7 +148,9 @@ public class Helper {
 
     public static int sumMapValuesInteger(Map<Integer, Integer> mapInitialBip) {
         int sum = 0;
+//        System.out.println("mapInitialBip = "+mapInitialBip);
         sum = mapInitialBip.keySet().stream().map((key) -> mapInitialBip.get(key)).reduce(sum, Integer::sum);
+//        System.out.println("sum = "+sum);
         return sum;
     }
 

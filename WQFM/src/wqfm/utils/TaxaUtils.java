@@ -41,6 +41,15 @@ public class TaxaUtils {
 
         return (Math.abs(sum) == (len - 2)) || (Math.abs(sum) == len);
     }
+    public static boolean isThisSingletonBipartition(int len_of_bipartition, int sum_of_bipartition, int partition) {
+    	sum_of_bipartition -= partition;
+    	sum_of_bipartition += TaxaUtils.getOppositePartition(partition);
+    	//System.out.println("sum "+sum_of_bipartition);
+    	/*
+    	 * another way is if partition = left_partition that means -1, then sum_of_bipartition += 2
+    	 *                if partition = right_partition that means +1, then sum_of_bipartition -= 2*/
+        return (Math.abs(sum_of_bipartition) == (len_of_bipartition - 2)) || (Math.abs(sum_of_bipartition) == len_of_bipartition);
+    }
 
     public static int findQuartetStatus(int left_sis1_bip, int left_sis2_bip, int right_sis1_bip, int right_sis2_bip) {
         int[] four_bipartitions = {left_sis1_bip, left_sis2_bip, right_sis1_bip, right_sis2_bip};
@@ -63,12 +72,13 @@ public class TaxaUtils {
         //All check fails, Violated quartet
         return DefaultValues.VIOLATED;
     }
-    public static void findQuartetHypoStatus(Quartet quartet) {
+    public static void findQuartetHypoStatus(Quartet quartet, Taxa taxa_sisters_left_0, Taxa taxa_sisters_left_1,
+    		Taxa taxa_sisters_right_0, Taxa taxa_sisters_right_1) {
     	Taxa[] sisters = new Taxa[4]; 
-    	sisters[0] = quartet.taxa_sisters_left[0];//Taxa sisTaxa 
-    	sisters[1] = quartet.taxa_sisters_left[1];//Taxa left_sis2 
-    	sisters[2] = quartet.taxa_sisters_right[0];//Taxa right_sis1 = quartet.taxa_sisters_right[0];
-    	sisters[3] = quartet.taxa_sisters_right[1];//Taxa right_sis2 = quartet.taxa_sisters_right[1];
+    	sisters[0] = taxa_sisters_left_0;//Taxa sisTaxa 
+    	sisters[1] = taxa_sisters_left_1;//Taxa left_sis2 
+    	sisters[2] = taxa_sisters_right_0;//Taxa right_sis1 = quartet.taxa_sisters_right[0];
+    	sisters[3] = taxa_sisters_right_1;//Taxa right_sis2 = quartet.taxa_sisters_right[1];
 //    	int[] sisters_partition = new int[4];
 //    	sisters_partition[0] = sisters[0].partition;
 //    	sisters_partition[1] = sisters[1].partition;
@@ -97,20 +107,21 @@ public class TaxaUtils {
 		}
 
     }
-    public static void findQuartetHypoStatusAfterFindingBestTaxa(Quartet quartet, Taxa best_taxa) {
+    public static int findQuartetHypoStatusAfterFindingBestTaxa(int quartet_status, double quartet_weight, Taxa taxa_sisters_left_0, Taxa taxa_sisters_left_1,
+    		Taxa taxa_sisters_right_0, Taxa taxa_sisters_right_1, Taxa best_taxa) {
 
     	Taxa[] sisters = new Taxa[4]; 
-    	sisters[0] = quartet.taxa_sisters_left[0];//Taxa sisTaxa 
-    	sisters[1] = quartet.taxa_sisters_left[1];//Taxa left_sis2 
-    	sisters[2] = quartet.taxa_sisters_right[0];//Taxa right_sis1 = quartet.taxa_sisters_right[0];
-    	sisters[3] = quartet.taxa_sisters_right[1];//Taxa right_sis2 = quartet.taxa_sisters_right[1];
+    	sisters[0] = taxa_sisters_left_0;//Taxa sisTaxa 
+    	sisters[1] = taxa_sisters_left_1;//Taxa left_sis2 
+    	sisters[2] = taxa_sisters_right_0;//Taxa right_sis1 = quartet.taxa_sisters_right[0];
+    	sisters[3] = taxa_sisters_right_1;//Taxa right_sis2 = quartet.taxa_sisters_right[1];
 //    	int[] sisters_partition = new int[4];
 //    	sisters_partition[0] = sisters[0].partition;
 //    	sisters_partition[1] = sisters[1].partition;
 //    	sisters_partition[2] = sisters[2].partition;
 //    	sisters_partition[3] = sisters[3].partition;
     	
-    	int quartet_previous_status = quartet.quartet_status;
+    	int quartet_previous_status = quartet_status;
     	int quartet_present_status = DefaultValues.DEFERRED;//
     	//System.out.println(quartet.quartet_status+"  "+findQuartetStatus(sisters[0].partition , sisters[1].partition , sisters[2].partition , sisters[3].partition));
     	
@@ -155,14 +166,15 @@ public class TaxaUtils {
 		}
     	for (int i = 0; i < 4; i++) {
     		if (!sisters[i].locked) {
-	       		 sisters[i]._8_vals_THIS_TAX_before_hypo_swap.subtractRespectiveValue(quartet.weight, quartet_previous_status);
-	       		 sisters[i]._8_vals_THIS_TAX_before_hypo_swap.addRespectiveValue(quartet.weight, quartet_present_status); //_8values include ns, nv, nd, nb, ws, wv, wd, wb
-	       		 sisters[i]._8_vals_THIS_TAX_AFTER_hypo_swap.subtractRespectiveValue(quartet.weight, quartet_previous_status_after_hypo_swap[i]);
-	       		 sisters[i]._8_vals_THIS_TAX_AFTER_hypo_swap.addRespectiveValue(quartet.weight, quartet_present_status_after_hypo_swap[i]);  
+	       		 sisters[i]._8_vals_THIS_TAX_before_hypo_swap.subtractRespectiveValue(quartet_weight, quartet_previous_status);
+	       		 sisters[i]._8_vals_THIS_TAX_before_hypo_swap.addRespectiveValue(quartet_weight, quartet_present_status); //_8values include ns, nv, nd, nb, ws, wv, wd, wb
+	       		 sisters[i]._8_vals_THIS_TAX_AFTER_hypo_swap.subtractRespectiveValue(quartet_weight, quartet_previous_status_after_hypo_swap[i]);
+	       		 sisters[i]._8_vals_THIS_TAX_AFTER_hypo_swap.addRespectiveValue(quartet_weight, quartet_present_status_after_hypo_swap[i]);  
 			}
            
 		}
-    	quartet.quartet_status = quartet_present_status;
+    	return quartet_present_status;
+    
 
     }
 
