@@ -84,6 +84,7 @@ public class FeatureComputer {
             int level) {
         //check on level==0 if is on the right side, don't bin further ...
         List<Double> list_ratios = new ArrayList<>();
+        double[] alpha_beta_partition_score = {4.0, 5.0};
 
         for (List<Integer> four_tax_seq : dictionary_4Tax_sequence_weight.keySet()) {
             List<Double> weights_under_this_4_tax_seq = dictionary_4Tax_sequence_weight.get(four_tax_seq);
@@ -100,6 +101,8 @@ public class FeatureComputer {
 
         if (list_ratios.isEmpty()) {
             System.out.println("Empty list of 4-tax-seq with 3-quartet-config. (default ratio): " + DefaultValues.BETA_DEFAULT_VAL);
+            alpha_beta_partition_score[0] = DefaultValues.ALPHA_DEFAULT_VAL;
+            alpha_beta_partition_score[1] = DefaultValues.BETA_DEFAULT_VAL; // beta default = 1
             WeightedPartitionScores.ALPHA_PARTITION_SCORE = DefaultValues.ALPHA_DEFAULT_VAL;
             WeightedPartitionScores.BETA_PARTITION_SCORE = DefaultValues.BETA_DEFAULT_VAL; // beta default = 1
             if (level == 1) {
@@ -128,12 +131,14 @@ public class FeatureComputer {
 
                     System.out.println(">> DON'T BIN ON NEXT LEVELS. Level 1 has good distribution above threshold = " + Config.THRESHOLD_BINNING
                             + " set BETA = " + DefaultValues.BETA_DEFAULT_VAL);
+                    alpha_beta_partition_score[1] = DefaultValues.BETA_DEFAULT_VAL; // set to 1
                     WeightedPartitionScores.BETA_PARTITION_SCORE = DefaultValues.BETA_DEFAULT_VAL; // set to 1 
                 }
 
             }
             if (Bin.WILL_DO_DYNAMIC == true) { //only bin on true conditions.
                 //set p.score as ratio.
+            	alpha_beta_partition_score[1] = weighted_avg_bin_ratio;
                 WeightedPartitionScores.BETA_PARTITION_SCORE = weighted_avg_bin_ratio;
                 System.out.println("\nP(0.5," + Config.THRESHOLD_BINNING + ") = " + Bin.proportion_left_thresh
                         + ", P(" + Config.THRESHOLD_BINNING + ",1) = "
@@ -144,6 +149,13 @@ public class FeatureComputer {
             }
 
         }
+        
+//        System.out.println("alpha_beta_partition_score[0] ="+alpha_beta_partition_score[0]);
+//        System.out.println("alpha_beta_partition_score[1] ="+alpha_beta_partition_score[1]);
+//        System.out.println("WeightedPartitionScores.ALPHA_PARTITION_SCORE = "+ WeightedPartitionScores.ALPHA_PARTITION_SCORE);
+//        System.out.println("WeightedPartitionScores.BETA_PARTITION_SCORE = "+WeightedPartitionScores.BETA_PARTITION_SCORE);
+        
+       // return alpha_beta_partition_score;
 
     }
 

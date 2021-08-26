@@ -16,7 +16,7 @@ import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.Quartet;
 import wqfm.feature.FeatureComputer;
 
-import wqfm.utils.TaxaUtils;
+
 import wqfm.configs.DefaultValues;
 
 /**
@@ -127,7 +127,7 @@ public class Bipartition_8_values {
         addRespectiveValue(q.weight, status);
     }
 
-    public void compute8ValuesUsingAllQuartets_this_level(CustomDSPerLevel customDS, Map<Integer, Integer> map_bipartitions) {
+    public void compute8ValuesUsingAllQuartets_this_level(CustomDSPerLevel customDS) {
 
         Map<List<Integer>, List<Double>> map_four_tax_seq_weights_list = new HashMap<>();
         //  System.out.println("L 100. Bipartition_8_vals: BIPARTITION size : " + map_bipartitions.keySet().size());

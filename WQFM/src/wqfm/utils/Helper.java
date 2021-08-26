@@ -154,70 +154,102 @@ public class Helper {
         return sum;
     }
 
-    private static String getKeysWithSpecifiedValue(Map<Integer, Integer> map, int val, Map<Integer, String> reverse_mapping) {
-        return map.keySet()
-                .stream()
-                .filter((t) -> {
-                    return map.get(t) == val;
-                })
-                .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x)) // x -> reverse_mapping.get(x)
-                .collect(Collectors.joining(", "));
-    }
-    private static String getKeysWithSpecifiedValue2(Map<Integer, Integer> map, int val, Map<Integer, Taxa> reverse_mapping) {
-        return map.keySet()
-                .stream()
-                .filter((t) -> {
-                    return map.get(t) == val;
-                })
-                .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x).taxa_name) // x -> reverse_mapping.get(x)// mim->check again
-                .collect(Collectors.joining(", "));
-    }
-    
+//    private static String getKeysWithSpecifiedValue(Map<Integer, Integer> map, int val, Map<Integer, String> reverse_mapping) {
+//        return map.keySet()
+//                .stream()
+//                .filter((t) -> {
+//                    return map.get(t) == val;
+//                })
+//                .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x)) // x -> reverse_mapping.get(x)
+//                .collect(Collectors.joining(", "));
+//    }
+//    private static String getKeysWithSpecifiedValue2(Map<Integer, Integer> map, int val, Map<Integer, Taxa> reverse_mapping) {
+//        return map.keySet()
+//                .stream()
+//                .filter((t) -> {
+//                    return map.get(t) == val;
+//                })
+//                .map(x -> (reverse_mapping.get(x) == null) ? Helper.getDummyName(x) : reverse_mapping.get(x).taxa_name) // x -> reverse_mapping.get(x)// mim->check again
+//                .collect(Collectors.joining(", "));
+//    }
 
-	public static String getPartition(Map<Integer, Integer> partition_map,
-            int left_partition, int right_partition,
-            Map<Integer, String> reverse_mapping) {
+
+//
+//    
+//
+//	public static String getPartition(Map<Integer, Integer> partition_map,
+//            int left_partition, int right_partition,
+//            Map<Integer, String> reverse_mapping) {
+//
+//        StringBuilder bld = new StringBuilder();
+//
+//        bld
+//                .append("LEFT: ")
+//                .append(getKeysWithSpecifiedValue(partition_map, left_partition, reverse_mapping))
+//                .append("\n")
+//                .append("RIGHT: ")
+//                .append(getKeysWithSpecifiedValue(partition_map, right_partition, reverse_mapping))
+//                .append("\n");
+//
+//        return bld.toString();
+//    }
+//    public static String getPartition2(Map<Integer, Integer> partition_map,
+//            int left_partition, int right_partition,
+//            Map<Integer, Taxa> reverse_mapping) {
+//
+//        StringBuilder bld = new StringBuilder();
+//
+//        bld
+//                .append("LEFT: ")
+//                .append(getKeysWithSpecifiedValue2(partition_map, left_partition, reverse_mapping))
+//                .append("\n")
+//                .append("RIGHT: ")
+//                .append(getKeysWithSpecifiedValue2(partition_map, right_partition, reverse_mapping))
+//                .append("\n");
+//
+//        return bld.toString();
+//    }
+
+
+//    public static void printPartition(Map<Integer, Integer> partition_map,
+//            int left_partition, int right_partition,
+//            Map<Integer, String> reverse_mapping) {
+//
+//        System.out.println(getPartition(partition_map, left_partition, right_partition, reverse_mapping));
+//    }
+//    public static void printPartition2(Map<Integer, Integer> partition_map,
+//            int left_partition, int right_partition,
+//            Map<Integer, Taxa> reverse_mapping) {
+//
+//        System.out.println(getPartition2(partition_map, left_partition, right_partition, reverse_mapping));
+//    }
+    private static String getKeysWithSpecifiedValue3(Map<Integer, Taxa> partition_map, int val) {
+        return partition_map.keySet()
+                .stream()
+                .filter((t) -> {
+                    return partition_map.get(t).partition == val;
+                })//.forEach((t) -> {});
+                .map(x -> (partition_map.get(x).taxa_name == null) ? Helper.getDummyName(x) : partition_map.get(x).taxa_name) // x -> reverse_mapping.get(x)// mim->check again
+                .collect(Collectors.joining(", "));
+    }
+    public static String getPartition3(Map<Integer, Taxa> partition_map,
+            int left_partition, int right_partition) {
 
         StringBuilder bld = new StringBuilder();
 
         bld
                 .append("LEFT: ")
-                .append(getKeysWithSpecifiedValue(partition_map, left_partition, reverse_mapping))
+                .append(getKeysWithSpecifiedValue3(partition_map, left_partition))
                 .append("\n")
                 .append("RIGHT: ")
-                .append(getKeysWithSpecifiedValue(partition_map, right_partition, reverse_mapping))
+                .append(getKeysWithSpecifiedValue3(partition_map, right_partition))
                 .append("\n");
 
         return bld.toString();
     }
-    public static String getPartition2(Map<Integer, Integer> partition_map,
-            int left_partition, int right_partition,
-            Map<Integer, Taxa> reverse_mapping) {
-
-        StringBuilder bld = new StringBuilder();
-
-        bld
-                .append("LEFT: ")
-                .append(getKeysWithSpecifiedValue2(partition_map, left_partition, reverse_mapping))
-                .append("\n")
-                .append("RIGHT: ")
-                .append(getKeysWithSpecifiedValue2(partition_map, right_partition, reverse_mapping))
-                .append("\n");
-
-        return bld.toString();
-    }
-
-    public static void printPartition(Map<Integer, Integer> partition_map,
-            int left_partition, int right_partition,
-            Map<Integer, String> reverse_mapping) {
-
-        System.out.println(getPartition(partition_map, left_partition, right_partition, reverse_mapping));
-    }
-    public static void printPartition2(Map<Integer, Integer> partition_map,
-            int left_partition, int right_partition,
-            Map<Integer, Taxa> reverse_mapping) {
-
-        System.out.println(getPartition2(partition_map, left_partition, right_partition, reverse_mapping));
+    public static void printPartition3(Map<Integer, Taxa> partition_map, int left_partition, int right_partition) {
+    	
+    	 System.out.println(getPartition3(partition_map, left_partition, right_partition));
     }
 
     private static String getDummyName(int x) {
@@ -371,6 +403,34 @@ public class Helper {
         
         
         return (map1.equals(newFinalMap));
+    }
+    public static boolean areEqualBipartition(Map<Integer, Taxa> map_of_int_vs_tax_property) {
+    	boolean equal_partition = true;
+//    	map_of_int_vs_tax_property.values().forEach((taxon) -> {
+//    		if(taxon.partition != taxon.prev_partition) {
+//    			equal_partition = Boolean.FALSE;
+//    			//break;
+//    		}
+//    	});
+    	for (Taxa taxon : map_of_int_vs_tax_property.values()) {
+    		if(taxon.partition != taxon.prev_partition) {
+    			equal_partition = false;
+    			break;
+    		}
+		}
+    	if (equal_partition) {
+			return true;
+		} else {
+			equal_partition = true;
+		   	for (Taxa taxon : map_of_int_vs_tax_property.values()) {
+	    		if(taxon.partition != TaxaUtils.getOppositePartition(taxon.prev_partition)) {
+	    			equal_partition = false;
+	    			break;
+	    		}
+			}
+
+		}
+        return equal_partition;
     }
 
 	public static String getFinalTreeFromArrayOfIntVsStr2(String final_tree,

@@ -1,15 +1,11 @@
 package wqfm.bip;
 
 import wqfm.configs.Config;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import wqfm.ds.CustomDSPerLevel;
 import wqfm.ds.Quartet;
 import wqfm.ds.Taxa;
-import wqfm.main.Main;
 import wqfm.configs.DefaultValues;
 
 /**
@@ -36,90 +32,123 @@ public class InitialBipartition {
         System.out.println(InitialBipartition.getCommaSeparatedEqualValue(map, DefaultValues.RIGHT_PARTITION));
     }
 
-    public Map<Integer, Integer> getInitialBipartitionMap(CustomDSPerLevel customDS) {
+    public void getInitialBipartitionMap(CustomDSPerLevel customDS) {
         // Factory level choice.
         switch (Config.BIPARTITION_MODE) {
 
             case DefaultValues.BIPARTITION_GREEDY:
-                return this.getInitialBipartitionGreedy(customDS);
+                this.getInitialBipartitionGreedy(customDS);
+                break;
 
             case DefaultValues.BIPARTITION_EXTREME:
-                return this.getInitialBipartitionExtreme(customDS);
+                this.getInitialBipartitionExtreme(customDS);
+                break;
 
             case DefaultValues.BIPARTITION_RANDOM:
-                return this.getInitialBipartitionRandom(customDS);
+                this.getInitialBipartitionRandom(customDS);
+                break;
 
             default:
-                return this.getInitialBipartitionGreedy(customDS); // by default
+                this.getInitialBipartitionGreedy(customDS); // by default
+                break;
 
         }
 
     }
 
-    private Map<Integer, Integer> getInitialBipartitionExtreme(CustomDSPerLevel customDS) {
+    private void getInitialBipartitionExtreme(CustomDSPerLevel customDS) {
         // one on the left, all the others on the right.
-        Map<Integer, Integer> map_partition = new HashMap<>();
+       //Map<Integer, Integer> map_partition = new HashMap<>();
 
         // initially put all taxa to the right.
-        customDS.map_of_int_vs_tax_property.keySet().forEach((t) -> {
-            map_partition.put(t, DefaultValues.RIGHT_PARTITION);
+        customDS.map_of_int_vs_tax_property.values().forEach((taxon) -> {
+            taxon.partition = DefaultValues.RIGHT_PARTITION;
         });
 
         // take the first taxa put into left.
-        int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
-        map_partition.put(firstTaxon, DefaultValues.LEFT_PARTITION);
+        for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+        	taxon.partition = DefaultValues.LEFT_PARTITION;
+            break;
+		}
+//        int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
+//        map_partition.put(firstTaxon, DefaultValues.LEFT_PARTITION);
         //map_partition.put(customDS.taxa_list_int.get(0), DefaultValues.LEFT_PARTITION);
 
-        return map_partition;
+//        return map_partition;
     }
 
-    private Map<Integer, Integer> getInitialBipartitionRandom(CustomDSPerLevel customDS) {
-        Map<Integer, Integer> map_partition = new HashMap<>();
+    private void getInitialBipartitionRandom(CustomDSPerLevel customDS) {
+        //Map<Integer, Integer> map_partition = new HashMap<>();
 
         // randomly assign partitions.
-        customDS.map_of_int_vs_tax_property.keySet().forEach((t) -> {
+        customDS.map_of_int_vs_tax_property.values().forEach((taxon) -> {
             int partition = (Math.random() > 0.5) ? DefaultValues.LEFT_PARTITION : DefaultValues.RIGHT_PARTITION;
-            map_partition.put(t, partition);
+            taxon.partition = partition;
         });
 
         // check if any side is empty, then place there.
         boolean has_left = false, has_right = false;
 
-        for (int key : map_partition.keySet()) {
-            int val = map_partition.get(key);
-            if (val == DefaultValues.LEFT_PARTITION) {
-                has_left = true;
-            }
-            if (val == DefaultValues.RIGHT_PARTITION) {
-                has_right = true;
-            }
-        }
+//        for (int key : map_partition.keySet()) {
+//            int val = map_partition.get(key);
+//            if (val == DefaultValues.LEFT_PARTITION) {
+//                has_left = true;
+//            }
+//            if (val == DefaultValues.RIGHT_PARTITION) {
+//                has_right = true;
+//            }
+//        }
+        for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+        	 int val = taxon.partition;
+             if (val == DefaultValues.LEFT_PARTITION) {
+                 has_left = true;
+             }
+             if (val == DefaultValues.RIGHT_PARTITION) {
+                 has_right = true;
+             }
+             if (has_left && has_right) {
+				break;
+			}
+		}
 
         if (!has_left) {
             // assign first element.
-        	int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
-            map_partition.put(firstTaxon, DefaultValues.LEFT_PARTITION);
+        	for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+        		taxon.partition = DefaultValues.LEFT_PARTITION;
+        		break;
+        	}
+//        	int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
+//            map_partition.put(firstTaxon, DefaultValues.LEFT_PARTITION);
         }
         if (!has_right) {
             // assign first element.
-        	int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
-            map_partition.put(firstTaxon, DefaultValues.RIGHT_PARTITION);
+        	for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+        		taxon.partition = DefaultValues.RIGHT_PARTITION;
+        		break;
+        	}
+//        	int firstTaxon =customDS.map_of_int_vs_tax_property.entrySet().stream().findFirst().get().getKey();
+//            map_partition.put(firstTaxon, DefaultValues.RIGHT_PARTITION);
         }
 
-        return map_partition;
+//        return map_partition;
     }
 
-    private Map<Integer, Integer> getInitialBipartitionGreedy(CustomDSPerLevel customDS) {
+    private void getInitialBipartitionGreedy(CustomDSPerLevel customDS) {
 
-        Map<Integer, Integer> map_partition = new HashMap<>(); //return this map
+        //Map<Integer, Integer> map_partition = new HashMap<>(); //return this map
 
-        for (int tax : customDS.map_of_int_vs_tax_property.keySet()) { //initially assign all as 0/unassigned
-            map_partition.put(tax, DefaultValues.UNASSIGNED_PARTITION);
-        }
+//        for (int tax : customDS.map_of_int_vs_tax_property.keySet()) { //initially assign all as 0/unassigned
+//            map_partition.put(tax, DefaultValues.UNASSIGNED_PARTITION);
+//        }
         //System.out.println(map_partition);
 //        customDS.map_of_int_vs_tax_property.values().forEach((taxon -> {
 //        	 taxon.partition = DefaultValues.UNASSIGNED_PARTITION;
 //        }));
+    	
+//    	for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+//        	System.out.println("First taxon"+taxon.partition);
+//            break;
+//		}
         
         int count_unassigned_taxa = customDS.map_of_int_vs_tax_property.size();
         int count_assigned_taxa = 0;
@@ -150,10 +179,10 @@ public class InitialBipartition {
 //        			+quartet_under_consideration.weight);
 
             int status_q1, status_q2, status_q3, status_q4; //status of q1,q2,q3,q4 respectively
-            status_q1 = map_partition.get(q1);
-            status_q2 = map_partition.get(q2);
-            status_q3 = map_partition.get(q3);
-            status_q4 = map_partition.get(q4);
+            status_q1 = t1.partition;//map_partition.get(q1);
+            status_q2 = t2.partition;//map_partition.get(q2);
+            status_q3 = t3.partition;//map_partition.get(q3);
+            status_q4 = t4.partition;//map_partition.get(q4);
             
             
             
@@ -161,10 +190,10 @@ public class InitialBipartition {
 
             if (status_q1 == DefaultValues.UNASSIGNED_PARTITION && status_q2 == DefaultValues.UNASSIGNED_PARTITION /*all taxa of this quartet are unassigned to any bipartition*/
                     && status_q3 == DefaultValues.UNASSIGNED_PARTITION && status_q4 == DefaultValues.UNASSIGNED_PARTITION) { // assign q1,q2 to left and q3,q4 to right
-                map_partition.put(q1, DefaultValues.LEFT_PARTITION);
-                map_partition.put(q2, DefaultValues.LEFT_PARTITION);
-                map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
-                map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
+//                map_partition.put(q1, DefaultValues.LEFT_PARTITION);
+//                map_partition.put(q2, DefaultValues.LEFT_PARTITION);
+//                map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
+//                map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
                 t1.partition = DefaultValues.LEFT_PARTITION;
                 t2.partition = DefaultValues.LEFT_PARTITION;
                 t3.partition = DefaultValues.RIGHT_PARTITION;
@@ -188,12 +217,12 @@ public class InitialBipartition {
                     if (status_q2 != DefaultValues.UNASSIGNED_PARTITION) { //look for q2's partition. put q1 in there
                         if (status_q2 == DefaultValues.LEFT_PARTITION) {
                             status_q1 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
                             t1.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition++;
                         } else {
                             status_q1 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
                             t1.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition++;
                         }
@@ -203,19 +232,19 @@ public class InitialBipartition {
                         // q3 in left, put q1 in right
                         if (status_q3 == DefaultValues.LEFT_PARTITION) {
                             status_q1 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
                             t1.partition = DefaultValues.RIGHT_PARTITION;
                             status_q2 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
                             t2.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition +=2;
                         } // status_q3 in right,put status_q1 in left
                         else {
                             status_q1 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
                             t1.partition = DefaultValues.LEFT_PARTITION;
                             status_q2 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q2, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q2, DefaultValues.LEFT_PARTITION);
                             t2.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition +=2;
                         }
@@ -224,27 +253,27 @@ public class InitialBipartition {
                         // q4 in left, put q1 in right
                         if (status_q4 == DefaultValues.LEFT_PARTITION) {
                             status_q1 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.RIGHT_PARTITION);
                             t1.partition = DefaultValues.RIGHT_PARTITION;
                             status_q2 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
                             t2.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition +=2;
                             status_q3 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
                             t3.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition++;
                         } //q4 in right,put q1 in left
                         else {
                             status_q1 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q1, DefaultValues.LEFT_PARTITION);
                             t1.partition = DefaultValues.LEFT_PARTITION;
                             status_q2 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q2, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q2, DefaultValues.LEFT_PARTITION);
                             t2.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition +=2;
                             status_q3 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
                             t3.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition ++;
                         }
@@ -257,12 +286,12 @@ public class InitialBipartition {
                     //look for q1's partition, put q2 in there
                     if (status_q1 == DefaultValues.LEFT_PARTITION) {
                         status_q2 = DefaultValues.LEFT_PARTITION;
-                        map_partition.put(q2, DefaultValues.LEFT_PARTITION);
+//                        map_partition.put(q2, DefaultValues.LEFT_PARTITION);
                         t2.partition = DefaultValues.LEFT_PARTITION;
                         count_taxa_left_partition++;
                     } else {
                         status_q2 = DefaultValues.RIGHT_PARTITION;
-                        map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
+//                        map_partition.put(q2, DefaultValues.RIGHT_PARTITION);
                         t2.partition = DefaultValues.RIGHT_PARTITION;
                         count_taxa_right_partition++;
                     }
@@ -274,12 +303,12 @@ public class InitialBipartition {
                     {
                         if (status_q4 == DefaultValues.RIGHT_PARTITION) {
                             status_q3 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
                             t3.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition++;
                         } else {
                             status_q3 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
                             t3.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition++;
                         }
@@ -287,18 +316,18 @@ public class InitialBipartition {
                     } else {
                         if (status_q1 == DefaultValues.RIGHT_PARTITION) {
                             status_q3 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.LEFT_PARTITION);
                             t3.partition = DefaultValues.LEFT_PARTITION;
                             status_q4 = DefaultValues.LEFT_PARTITION;
-                            map_partition.put(q4, DefaultValues.LEFT_PARTITION);
+//                            map_partition.put(q4, DefaultValues.LEFT_PARTITION);
                             t4.partition = DefaultValues.LEFT_PARTITION;
                             count_taxa_left_partition +=2;
                         } else {
                             status_q3 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q3, DefaultValues.RIGHT_PARTITION);
                             t3.partition = DefaultValues.RIGHT_PARTITION;
                             status_q4 = DefaultValues.RIGHT_PARTITION;
-                            map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
+//                            map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
                             t4.partition = DefaultValues.RIGHT_PARTITION;
                             count_taxa_right_partition +=2;
                         }
@@ -309,12 +338,12 @@ public class InitialBipartition {
                 if (status_q4 == DefaultValues.UNASSIGNED_PARTITION) {
                     if (status_q3 == DefaultValues.LEFT_PARTITION) {
                         status_q4 = DefaultValues.LEFT_PARTITION;
-                        map_partition.put(q4, DefaultValues.LEFT_PARTITION);
+//                        map_partition.put(q4, DefaultValues.LEFT_PARTITION);
                         t4.partition = DefaultValues.LEFT_PARTITION;
                         count_taxa_left_partition++;
                     } else {
                         status_q4 = DefaultValues.RIGHT_PARTITION;
-                        map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
+//                        map_partition.put(q4, DefaultValues.RIGHT_PARTITION);
                         t4.partition = DefaultValues.RIGHT_PARTITION;
                         count_taxa_right_partition++;
                     }
@@ -329,12 +358,14 @@ public class InitialBipartition {
 			}
         
 		}
-		//System.out.println("loop count = "+loop_count);
+//		System.out.println("loop count = ");
         //now assign remaining taxa randomly step4
         int flag_for_random_assignment = 0;
         if (count_assigned_taxa != count_unassigned_taxa) {
-            for (int key_tax : map_partition.keySet()) {
-                if (map_partition.get(key_tax) == DefaultValues.UNASSIGNED_PARTITION) {
+        	for (Taxa taxon : customDS.map_of_int_vs_tax_property.values()) {
+        		
+                if (taxon.partition == DefaultValues.UNASSIGNED_PARTITION) {
+//                	System.out.println("accessed");
                     if (count_taxa_left_partition < count_taxa_right_partition) {
                         flag_for_random_assignment = 2;
                     } else if (count_taxa_left_partition > count_taxa_right_partition) {
@@ -343,13 +374,13 @@ public class InitialBipartition {
                         flag_for_random_assignment++;
                     }
                     if (flag_for_random_assignment % 2 == 0) {
-                        map_partition.put(key_tax, DefaultValues.LEFT_PARTITION);
-                        customDS.map_of_int_vs_tax_property.get(key_tax).partition = DefaultValues.LEFT_PARTITION;
+//                        map_partition.put(key_tax, DefaultValues.LEFT_PARTITION);
+                        taxon.partition = DefaultValues.LEFT_PARTITION;
                         count_taxa_left_partition++;
                         count_assigned_taxa++;
                     } else {
-                        map_partition.put(key_tax, DefaultValues.RIGHT_PARTITION);
-                        customDS.map_of_int_vs_tax_property.get(key_tax).partition = DefaultValues.RIGHT_PARTITION;
+//                        map_partition.put(key_tax, DefaultValues.RIGHT_PARTITION);
+                        taxon.partition = DefaultValues.RIGHT_PARTITION;
                         count_taxa_right_partition++;
                         count_assigned_taxa++;
                     }
@@ -360,7 +391,37 @@ public class InitialBipartition {
     				break;
     			}
             }
-		}
+        }
+//        if (count_assigned_taxa != count_unassigned_taxa) {
+//            for (int key_tax : map_partition.keySet()) {
+//                if (map_partition.get(key_tax) == DefaultValues.UNASSIGNED_PARTITION) {
+//                	System.out.println("accessed");
+//                    if (count_taxa_left_partition < count_taxa_right_partition) {
+//                        flag_for_random_assignment = 2;
+//                    } else if (count_taxa_left_partition > count_taxa_right_partition) {
+//                        flag_for_random_assignment = 1;
+//                    } else {
+//                        flag_for_random_assignment++;
+//                    }
+//                    if (flag_for_random_assignment % 2 == 0) {
+//                        map_partition.put(key_tax, DefaultValues.LEFT_PARTITION);
+//                        customDS.map_of_int_vs_tax_property.get(key_tax).partition = DefaultValues.LEFT_PARTITION;
+//                        count_taxa_left_partition++;
+//                        count_assigned_taxa++;
+//                    } else {
+//                        map_partition.put(key_tax, DefaultValues.RIGHT_PARTITION);
+//                        customDS.map_of_int_vs_tax_property.get(key_tax).partition = DefaultValues.RIGHT_PARTITION;
+//                        count_taxa_right_partition++;
+//                        count_assigned_taxa++;
+//                    }
+//                }
+//                if (count_assigned_taxa == count_unassigned_taxa) {
+////    				System.out.println("count_assigned_taxa ="+count_assigned_taxa );
+////    				System.out.println("count_unassigned_taxa ="+count_unassigned_taxa );
+//    				break;
+//    			}
+//            }
+//		}
 
         
 //        System.out.println(".......................Initial map......................... \n"+map_partition);
@@ -368,7 +429,7 @@ public class InitialBipartition {
 //       	 System.out.print(taxon.taxa_int_name +"="+taxon.partition+", ");
 //       }));
 
-        return map_partition;
+//        return map_partition;
 
     }
 

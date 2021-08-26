@@ -1,8 +1,8 @@
 package wqfm.ds;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
+
 
 import wqfm.bip.Bipartition_8_values;
 import wqfm.configs.DefaultValues;
@@ -12,6 +12,7 @@ public class Taxa {
 	//public int taxa_int_name;
 	public String taxa_name;
 	public int partition;
+	public int prev_partition;
 	public boolean locked;
 	public boolean participated_in_swap;
 	public double gain;

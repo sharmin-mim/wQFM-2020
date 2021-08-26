@@ -96,9 +96,7 @@ public class FMRunner {
 //            System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
 //        }
        // System.out.println("Total Num-Taxa = " + customDS_this_level.map_taxa_relevant_quartet_indices.size());
-        if (Config.MEMORY_CONSTRAINT == 0) {
-        	customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map
-		}
+        
         
         /////////////////// TERMINATING CONDITIONS \\\\\\\\\\\\\\\\\\\\\\\\
         // |P| <= 3 OR |Q|.isEmpty() ... return star over taxa list{P}
@@ -112,22 +110,32 @@ public class FMRunner {
         customDS_this_level.level = level; //for debugging issues.
 
         InitialBipartition initialBip = new InitialBipartition();
-        Map<Integer, Integer> mapInitialBipartition = initialBip.getInitialBipartitionMap(customDS_this_level);
+        //Map<Integer, Integer> mapInitialBipartition = 
+        initialBip.getInitialBipartitionMap(customDS_this_level);
+        
+//        customDS_this_level.map_of_int_vs_tax_property.keySet().forEach((key) -> {
+//        	Taxa taxon = customDS_this_level.map_of_int_vs_tax_property.get(key);
+//        	System.out.print(key+"="+taxon.partition+", ");
+//        });
+//        System.out.println();
 
 
         if (Config.DEBUG_MODE_PRINTING_GAINS_BIPARTITIONS) {
             System.out.println("L 84. FMComputer. Printing initialBipartition.");
 //            Helper.printPartition(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.map_of_int_vs_str_tax_list);
-            Helper.printPartition2(mapInitialBipartition, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION, InitialTable.initial_map_of_int_vs_tax_property);
+            Helper.printPartition3(customDS_this_level.map_of_int_vs_tax_property, DefaultValues.LEFT_PARTITION, DefaultValues.RIGHT_PARTITION);
         }
 
         Bipartition_8_values initialBip_8_vals = new Bipartition_8_values();
-        initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level, mapInitialBipartition);
+        initialBip_8_vals.compute8ValuesUsingAllQuartets_this_level(customDS_this_level);//memory consuming step. try to change
         //System.out.println("-----------initial 8 vals--------\n"+initialBip_8_vals);
         System.out.println(WeightedPartitionScores.GET_PARTITION_SCORE_PRINT() + " LEVEL: " + level + ", ALPHA: " + WeightedPartitionScores.ALPHA_PARTITION_SCORE + ", BETA: " + WeightedPartitionScores.BETA_PARTITION_SCORE);
 
         //System.out.println(initialBip_8_vals.toString());
-        FMComputer fmComputerObject = new FMComputer(customDS_this_level, mapInitialBipartition, initialBip_8_vals, level);
+        if (Config.MEMORY_CONSTRAINT == 0) {
+        	customDS_this_level.fillRelevantQuartetsMap(); //fill-up the relevant quartets per taxa map;//memory consuming step
+		}
+        FMComputer fmComputerObject = new FMComputer(customDS_this_level, initialBip_8_vals, level);
         FMResultObject fmResultObject = fmComputerObject.run_FM_Algorithm_Whole();
 
         CustomDSPerLevel customDS_left = fmResultObject.customDS_left_partition;
