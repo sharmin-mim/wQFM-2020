@@ -52,14 +52,14 @@ public class WeightedPartitionScores {
     private static double calculatePScoreFullDynamic(Bipartition_8_values bip_8_vals) {//creates problem while parallelizing left and right fmobject in fmrunner
         return (WeightedPartitionScores.ALPHA_PARTITION_SCORE * bip_8_vals.wtSatisfied - WeightedPartitionScores.BETA_PARTITION_SCORE * bip_8_vals.wtViolated);
     }
-//    private static double calculatePScoreCommandLine(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {//creates problem while parallelizing left and right fmobject in fmrunner 
-//        //   System.out.println("ALPHA: "+WeightedPartitionScores.ALPHA_PARTITION_SCORE + "BETA: "+WeightedPartitionScores.BETA_PARTITION_SCORE);
-//        return (ALPHA_PARTITION_SCORE * bip_8_vals.wtSatisfied - BETA_PARTITION_SCORE * bip_8_vals.wtViolated);
-//    }
-//
-//    private static double calculatePScoreFullDynamic(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {//creates problem while parallelizing left and right fmobject in fmrunner
-//        return (ALPHA_PARTITION_SCORE * bip_8_vals.wtSatisfied - BETA_PARTITION_SCORE * bip_8_vals.wtViolated);
-//    }
+    private static double calculatePScoreCommandLine(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {//creates problem while parallelizing left and right fmobject in fmrunner 
+        //   System.out.println("ALPHA: "+WeightedPartitionScores.ALPHA_PARTITION_SCORE + "BETA: "+WeightedPartitionScores.BETA_PARTITION_SCORE);
+        return (ALPHA_PARTITION_SCORE * bip_8_vals.wtSatisfied - BETA_PARTITION_SCORE * bip_8_vals.wtViolated);
+    }
+
+    private static double calculatePScoreFullDynamic(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {//creates problem while parallelizing left and right fmobject in fmrunner
+        return (ALPHA_PARTITION_SCORE * bip_8_vals.wtSatisfied - BETA_PARTITION_SCORE * bip_8_vals.wtViolated);
+    }
 
 
     public static double calculatePartitionScoreReduced(Bipartition_8_values bip_8_vals) {
@@ -92,36 +92,36 @@ public class WeightedPartitionScores {
         }
 
     }
-//    public static double calculatePartitionScoreReduced(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {
-//
-//        switch (Config.PARTITION_SCORE_MODE) {
-//            case DefaultValues.PARTITION_SCORE_MODE_0:
-//                return WeightedPartitionScores.calculatePScore0(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_1:
-//                return WeightedPartitionScores.calculatePScore1(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_2:
-//                return WeightedPartitionScores.calculatePScore2(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_3:
-//                return WeightedPartitionScores.calculatePScore3(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_4:
-//                return WeightedPartitionScores.calculatePScore4(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_5:
-//                return WeightedPartitionScores.calculatePScore5(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_6:
-//                return WeightedPartitionScores.calculatePScore6(bip_8_vals);
-//            case DefaultValues.PARTITION_SCORE_MODE_7:
-//                return WeightedPartitionScores.calculatePScore7(bip_8_vals);
-//            case DefaultValues.PARITTION_SCORE_COMMAND_LINE:
-//            	//System.out.println("command line");
-//                return WeightedPartitionScores.calculatePScoreCommandLine(bip_8_vals, ALPHA_PARTITION_SCORE, BETA_PARTITION_SCORE);
-//            case DefaultValues.PARTITION_SCORE_FULL_DYNAMIC:
-//            	//System.out.println("Full dynamic");
-//                return WeightedPartitionScores.calculatePScoreFullDynamic(bip_8_vals, ALPHA_PARTITION_SCORE, BETA_PARTITION_SCORE);
-//            default:
-//                return WeightedPartitionScores.calculatePScore0(bip_8_vals); //[s]-[v] is default.
-//        }
-//
-//    }
+    public static double calculatePartitionScoreReduced(Bipartition_8_values bip_8_vals, double ALPHA_PARTITION_SCORE, double BETA_PARTITION_SCORE) {
+
+        switch (Config.PARTITION_SCORE_MODE) {
+            case DefaultValues.PARTITION_SCORE_MODE_0:
+                return WeightedPartitionScores.calculatePScore0(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_1:
+                return WeightedPartitionScores.calculatePScore1(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_2:
+                return WeightedPartitionScores.calculatePScore2(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_3:
+                return WeightedPartitionScores.calculatePScore3(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_4:
+                return WeightedPartitionScores.calculatePScore4(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_5:
+                return WeightedPartitionScores.calculatePScore5(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_6:
+                return WeightedPartitionScores.calculatePScore6(bip_8_vals);
+            case DefaultValues.PARTITION_SCORE_MODE_7:
+                return WeightedPartitionScores.calculatePScore7(bip_8_vals);
+            case DefaultValues.PARITTION_SCORE_COMMAND_LINE:
+            	//System.out.println("command line");
+                return WeightedPartitionScores.calculatePScoreCommandLine(bip_8_vals, ALPHA_PARTITION_SCORE, BETA_PARTITION_SCORE);
+            case DefaultValues.PARTITION_SCORE_FULL_DYNAMIC:
+            	//System.out.println("Full dynamic");
+                return WeightedPartitionScores.calculatePScoreFullDynamic(bip_8_vals, ALPHA_PARTITION_SCORE, BETA_PARTITION_SCORE);
+            default:
+                return WeightedPartitionScores.calculatePScore0(bip_8_vals); //[s]-[v] is default.
+        }
+
+    }
 
     public static String GET_PARTITION_SCORE_PRINT() {
         int mode = Config.PARTITION_SCORE_MODE;

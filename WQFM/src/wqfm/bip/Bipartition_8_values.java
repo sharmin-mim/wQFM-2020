@@ -197,7 +197,7 @@ public class Bipartition_8_values {
             for (Quartet quartet : customDS.initial_table1_of_list_of_quartets.list_quartets) {
             	 FeatureComputer.makeDictionary(quartet, map_four_tax_seq_weights_list);
             }
-            FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, customDS.level);
+            FeatureComputer.computeBinningFeature(map_four_tax_seq_weights_list, customDS);
         }
 
     }

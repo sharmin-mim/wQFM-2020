@@ -28,6 +28,9 @@ public class CustomDSPerLevel {
     //public Map<Double, List<Integer>> sorted_quartets_weight_list_indices_map;
     
     public Map<Integer, Taxa> map_of_int_vs_tax_property;
+    
+    public double ALPHA_PARTITION_SCORE;// = WeightedPartitionScores.ALPHA_PARTITION_SCORE;//this variable is added for paralllizing fmobject call in fmrunner
+    public double BETA_PARTITION_SCORE;// = WeightedPartitionScores.BETA_PARTITION_SCORE;//this variable is added for paralllizing fmobject call in fmrunner
 
     //public List<Integer> taxa_list_int;
 
@@ -41,9 +44,14 @@ public class CustomDSPerLevel {
         //this.sorted_quartets_weight_list_indices_map = new TreeMap<>(Collections.reverseOrder());
        // this.taxa_list_int = new ArrayList<>();
         //this.initial_table1_of_list_of_quartets = new InitialTable();
+    	this(WeightedPartitionScores.ALPHA_PARTITION_SCORE, WeightedPartitionScores.BETA_PARTITION_SCORE);
+//        this.map_of_int_vs_tax_property = new LinkedHashMap<>();
+    }
+    public CustomDSPerLevel(double alpha, double beta) {
+        this.ALPHA_PARTITION_SCORE = alpha;
+        this.BETA_PARTITION_SCORE = beta;
         this.map_of_int_vs_tax_property = new LinkedHashMap<>();
     }
-
     public void printTable1() {
         System.out.println("----------- Table1 [SINGLE list of quartets indices] ------------------");
         

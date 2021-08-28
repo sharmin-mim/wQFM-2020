@@ -690,8 +690,8 @@ public class FMComputer {
             	Bipartition_8_values _8_vals_THIS_TAX_before_hypo_swap = new Bipartition_8_values(taxonToConsider._8_vals_THIS_TAX_before_hypo_swap); // all initialized to 0
             	Bipartition_8_values _8_vals_THIS_TAX_AFTER_hypo_swap = new Bipartition_8_values(taxonToConsider._8_vals_THIS_TAX_AFTER_hypo_swap); // all initialized to 0
 
-                double ps_before_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_before_hypo_swap);
-                double ps_after_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_AFTER_hypo_swap);
+                double ps_before_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_before_hypo_swap, this.customDS.ALPHA_PARTITION_SCORE, this.customDS.BETA_PARTITION_SCORE);
+                double ps_after_reduced = WeightedPartitionScores.calculatePartitionScoreReduced(_8_vals_THIS_TAX_AFTER_hypo_swap, this.customDS.ALPHA_PARTITION_SCORE, this.customDS.BETA_PARTITION_SCORE);
                 double gainOfThisTax = ps_after_reduced - ps_before_reduced; //correct calculation
                 
                 Bipartition_8_values _8_values_whole_considering_thisTax_swap = new Bipartition_8_values();

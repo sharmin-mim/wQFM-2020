@@ -193,6 +193,7 @@ public class Quartet {
         if (!Arrays.equals(this.taxa_sisters_right, other.taxa_sisters_right)) {
             return false;
         }
+        System.out.println(this.toString()+" .... "+other.toString());
         return true;
     }
 
